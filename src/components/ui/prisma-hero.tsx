@@ -121,7 +121,7 @@ const PrismaHero = () => {
                 className="font-medium leading-[0.85] tracking-[-0.07em] text-[26vw] sm:text-[24vw] md:text-[22vw] lg:text-[20vw] xl:text-[19vw] 2xl:text-[20vw]"
                 style={{ color: "#E1E0CC" }}
               >
-                <WordsPullUp text="Prisma" showAsterisk />
+                <WordsPullUp text="Codly" showAsterisk />
               </h2>
             </div>
 
@@ -133,7 +133,7 @@ const PrismaHero = () => {
                 className="text-xs text-primary/70 sm:text-sm md:text-base"
                 style={{ lineHeight: 1.2 }}
               >
-                Prisma is a worldwide network of visual artists, filmmakers and storytellers bound not by place, status or labels but by passion and hunger to unlock potential through our unique perspectives.
+                Codly is a worldwide network of visual artists, filmmakers and storytellers bound not by place, status or labels but by passion and hunger to unlock potential through our unique perspectives.
               </motion.p>
 
               <motion.button

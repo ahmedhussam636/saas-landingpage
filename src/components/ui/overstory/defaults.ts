@@ -59,7 +59,7 @@ export const DEFAULT_STEPS = [
 ]
 
 export const DEFAULT_QUOTES = [
-  { quote: "Overstory felt like hiring a senior product team overnight. We went from Figma chaos to a launched product in seven weeks, and raised our A on the back of it.", name: "Maya Okafor", role: "CEO, ScribeAI", mark: "scribe" },
+  { quote: "Codly felt like hiring a senior product team overnight. We went from Figma chaos to a launched product in seven weeks, and raised our A on the back of it.", name: "Maya Okafor", role: "CEO, ScribeAI", mark: "scribe" },
   { quote: "They designed it and they built it, so nothing got lost in a handoff. Activation doubled the month the new onboarding shipped.", name: "Daniel Reyes", role: "Founder, Salesive", mark: "slash" },
   { quote: "The design system they left behind is the reason our three new engineers still ship UI that looks like us.", name: "Priya Natarajan", role: "CTO, watchup", mark: "watch" },
 ]

@@ -74,7 +74,7 @@ export type {
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger)
 
 export default function OverstoryStudioLanding({
-  brand = "Overstory",
+  brand = "Codly",
   links = DEFAULT_LINKS,
   status = null,
   hero,
@@ -89,7 +89,7 @@ export default function OverstoryStudioLanding({
   faq,
   cta = DEFAULT_CTA,
   footer = DEFAULT_FOOTER,
-  email = "hello@overstory.studio",
+  email = "hello@codly.studio",
   currency = "$",
   season = "summer",
   photo = OVS_PHOTO,
