@@ -1,6 +1,6 @@
 import * as React from "react"
 import TeamLanyardRail, { type LanyardMember } from "@/components/ui/team-lanyard-rail"
-import { Arrow, Kicker, Split } from "../marks"
+import { Kicker, Split } from "../marks"
 
 interface TeamSectionProps {
   uid: string
@@ -128,12 +128,6 @@ export function TeamSection({ uid, brand, still, book }: TeamSectionProps) {
           items={members}
           caption="Brush along the rail to meet someone, pull a badge down, click to flip it."
           autoplay={!still}
-          action={
-            <a href="#contact" className="ovs-btn ovs-btn-dark" onClick={book("team")}>
-              <span>Work with the crew</span>
-              <Arrow />
-            </a>
-          }
         />
       </div>
     </section>

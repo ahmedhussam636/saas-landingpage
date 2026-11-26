@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 /* ---------------- WordsPullUp ---------------- */
 interface WordsPullUpProps {
@@ -82,15 +82,27 @@ export const WordsPullUpMultiStyle = ({ segments, className = "", style }: Words
 
 /* ---------------- Hero ---------------- */
 const PrismaHero = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isVisible = useInView(sectionRef, { margin: "200px 0px" });
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (isVisible) v.play().catch(() => {});
+    else v.pause();
+  }, [isVisible]);
+
   return (
-    <section className="h-screen w-full px-4 py-6 sm:px-6 md:px-10">
+    <section ref={sectionRef} className="h-screen w-full px-4 py-6 sm:px-6 md:px-10">
       <div className="relative h-full w-full overflow-hidden rounded-2xl md:rounded-[2rem]">
         {/* Background video */}
         <video
-          autoPlay
+          ref={videoRef}
           loop
           muted
           playsInline
+          preload="metadata"
           className="absolute inset-0 h-full w-full object-cover"
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4"
         />

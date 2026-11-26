@@ -3,7 +3,6 @@
 import * as React from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { PrismaHero } from "@/components/ui/prisma-hero"
 import type {
   OverstoryStudioLandingProps,
   OvsCase,
@@ -49,9 +48,11 @@ import { WorkSection } from "./overstory/sections/WorkSection"
 import { ProcessSection } from "./overstory/sections/ProcessSection"
 import { QuotesSection } from "./overstory/sections/QuotesSection"
 import { FaqSection } from "./overstory/sections/FaqSection"
-import { TeamSection } from "./overstory/sections/TeamSection"
 import { FinaleSection } from "./overstory/sections/FinaleSection"
 import { FooterSection } from "./overstory/sections/FooterSection"
+
+const PrismaHero = React.lazy(() => import("@/components/ui/prisma-hero").then((m) => ({ default: m.PrismaHero })))
+const TeamSection = React.lazy(() => import("./overstory/sections/TeamSection").then((m) => ({ default: m.TeamSection })))
 
 export type {
   OverstoryStudioLandingProps,
@@ -182,12 +183,12 @@ export default function OverstoryStudioLanding({
     el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" })
   }, [])
 
-  const book = (from: string) => (e: React.MouseEvent) => {
+  const book = React.useCallback((from: string) => (e: React.MouseEvent) => {
     if (onBook) {
       e.preventDefault()
       onBook(from)
     } else go("#contact")(e)
-  }
+  }, [onBook, go])
 
   // nav: solid once you leave the top, hides while you scroll down, active link follows the section in view
   React.useEffect(() => {
@@ -375,7 +376,9 @@ export default function OverstoryStudioLanding({
         />
         {pc ? (
           <div data-sec="pricing">
-            <PrismaHero />
+            <React.Suspense fallback={<div className="h-screen w-full" />}>
+              <PrismaHero />
+            </React.Suspense>
           </div>
         ) : null}
         <FaqSection
@@ -387,7 +390,9 @@ export default function OverstoryStudioLanding({
           email={email}
           copyEmail={copyEmail}
         />
-        <TeamSection uid={uid} brand={brand} still={still} book={book} />
+        <React.Suspense fallback={<div className="min-h-[420px] w-full" />}>
+          <TeamSection uid={uid} brand={brand} still={still} book={book} />
+        </React.Suspense>
         <FinaleSection
           uid={uid}
           cta={cta}
