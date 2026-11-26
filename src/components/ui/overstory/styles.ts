@@ -379,10 +379,11 @@ export const OVS_CSS = `
 .ovs-foot-cols a:hover{background-size:100% 1px}
 .ovs-clock{display:flex;align-items:center;gap:8px;font-size:15px;font-variant-numeric:tabular-nums}
 .ovs-clock i{width:7px;height:7px;border-radius:50%;background:#4cbb3f;animation:ovs-pulse 2.2s infinite}
-.ovs-wordmark{display:flex;justify-content:center;font-size:clamp(80px,20.5vw,330px);line-height:.8;letter-spacing:-.07em;font-weight:600;margin-top:clamp(60px,8vw,110px);overflow:hidden;padding:0 12px .06em;user-select:none}
-.ovs-wordmark span{display:inline-block;background:linear-gradient(180deg,var(--ovs-soft),color-mix(in oklab,var(--ovs-soft) 40%,var(--ovs-forest)) 92%);-webkit-background-clip:text;background-clip:text;color:transparent;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
-.ovs-wordmark span:hover{transform:translateY(-6%)}
-.ovs-foot-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-top:22px;padding-bottom:26px;border-top:1px solid rgba(237,241,230,.12);font-size:13.5px;color:rgba(237,241,230,.6)}
+.ovs-wordmark-box{container-type:inline-size;width:100%;margin-top:clamp(44px,7vw,96px)}
+.ovs-wordmark{display:flex;justify-content:center;align-items:baseline;direction:ltr;font-size:clamp(48px,min(28vw,calc(140vw / var(--ovs-brand-len,5))),360px);font-size:clamp(48px,min(32cqw,calc(152cqw / var(--ovs-brand-len,5))),360px);line-height:1.04;letter-spacing:0;font-weight:600;overflow:hidden;padding:.08em 0 .14em;user-select:none}
+.ovs-wordmark span{display:inline-block;background:linear-gradient(180deg,var(--ovs-soft),color-mix(in oklab,var(--ovs-soft) 40%,var(--ovs-forest)) 94%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ovs-wordmark span+span{margin-left:-.04em}
+.ovs-foot-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap;padding-top:22px;padding-bottom:26px;border-top:1px solid rgba(237,241,230,.12);font-size:13.5px;color:rgba(237,241,230,.6)}
 .ovs-top{display:inline-flex;align-items:center;gap:8px;color:#edf1e6;font-size:13.5px}
 .ovs-top .ovs-svg{width:14px;height:14px;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
 .ovs-top:hover .ovs-svg{transform:translateY(-4px)}
@@ -390,7 +391,7 @@ export const OVS_CSS = `
 /* responsive */
 @media (max-width:1020px){.ovs-links{display:none}.ovs-burger{display:flex}.ovs-nav-in{justify-content:space-between}.ovs-plans{grid-template-columns:1fr;max-width:520px}.ovs-stats{grid-template-columns:repeat(2,1fr);row-gap:40px}.ovs-foot-top{grid-template-columns:1fr}.ovs-svc-time{display:none}.ovs-svc-h button{grid-template-columns:44px 1fr 40px}.ovs-svc-body{grid-template-columns:44px 1fr}}
 @media (max-width:820px){.ovs-proc-grid{grid-template-columns:1fr}.ovs-tree-col{display:none}.ovs-step{opacity:1;min-height:0}.ovs-faq-grid{grid-template-columns:1fr}.ovs-foot-cols{grid-template-columns:repeat(2,1fr);row-gap:36px}.ovs-card-meta{grid-template-columns:1fr}.ovs-card-metric{text-align:left;align-items:flex-start}.ovs-svc-prev{display:none}}
-@media (max-width:560px){.ovs-root[data-photo] .ovs-copy::before{left:-4%;right:-4%;top:-14%;bottom:-14%}.ovs-nav-cta{display:none}.ovs-logo-row{column-gap:20px}.ovs-h1{font-size:clamp(36px,10.4vw,56px)}.ovs-quote figcaption{flex-wrap:wrap}.ovs-mock-phone{width:190px}.ovs-mk-kpis b{font-size:14px}.ovs-acc-item p{padding-right:0}}
+@media (max-width:560px){.ovs-root[data-photo] .ovs-copy::before{left:-4%;right:-4%;top:-14%;bottom:-14%}.ovs-nav-cta{display:none}.ovs-logo-row{column-gap:20px}.ovs-h1{font-size:clamp(36px,10.4vw,56px)}.ovs-quote figcaption{flex-wrap:wrap}.ovs-mock-phone{width:190px}.ovs-mk-kpis b{font-size:14px}.ovs-acc-item p{padding-right:0}.ovs-wordmark-box{margin-top:36px}.ovs-wordmark{padding:.06em 0 .12em}.ovs-foot-bottom{font-size:13px;padding-top:18px;padding-bottom:22px}}
 @media (prefers-reduced-motion:reduce){.ovs-sway,.ovs-sway-p,.ovs-status i,.ovs-clock i,.ovs-dapple i,.ovs-plan-ring,.ovs-cue-line::after,.ovs-sheet a{animation:none}.ovs-dots i{animation:none;transform:scaleX(1)}.ovs-fold,.ovs-svc-art,.ovs-svc-row::after,.ovs-svc-t,.ovs-seg-pill,.ovs-nav,.ovs-mock,.ovs-card-sun{transition:none}}
 `
 

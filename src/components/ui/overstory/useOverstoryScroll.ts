@@ -281,8 +281,21 @@ export function useOverstoryScroll({
         }
 
         /* 9. footer: the wordmark rises letter by letter */
-        const wm = q("[data-wordmark]")[0]
-        if (wm) gsap.fromTo(wm.querySelectorAll("span"), { yPercent: 105 }, { yPercent: 0, duration: 1.4, stagger: 0.05, ease: "expo.out", scrollTrigger: { trigger: wm, start: "top 98%", once: true } })
+        const wm = q("[data-wordmark]")[0] as HTMLElement | undefined
+        if (wm) {
+          gsap.fromTo(
+            wm.querySelectorAll("span"),
+            { yPercent: 120 },
+            {
+              yPercent: 0,
+              duration: 1.4,
+              stagger: 0.05,
+              ease: "expo.out",
+              clearProps: "transform",
+              scrollTrigger: { trigger: wm.closest("footer") || wm, start: "top 92%", once: true },
+            },
+          )
+        }
 
         return () => {
           heroIn.current = null
@@ -291,8 +304,16 @@ export function useOverstoryScroll({
       })
     }, r)
     const raf = requestAnimationFrame(() => ScrollTrigger.refresh())
+    let refreshRaf = 0
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => {
+      cancelAnimationFrame(refreshRaf)
+      refreshRaf = requestAnimationFrame(() => ScrollTrigger.refresh())
+    }) : null
+    ro?.observe(r)
     return () => {
       cancelAnimationFrame(raf)
+      cancelAnimationFrame(refreshRaf)
+      ro?.disconnect()
       ctx.revert()
     }
     // the storyboard is built once (and again only if the photo gives way to

@@ -91,10 +91,19 @@ export function FooterSection({
               </div>
             </div>
           </div>
-          <div className="ovs-wordmark" data-wordmark aria-hidden="true">
-            {Array.from(brand).map((ch, i) => (
-              <span key={i}>{ch}</span>
-            ))}
+          <div className="ovs-wrap">
+            <div className="ovs-wordmark-box">
+              <div
+                className="ovs-wordmark"
+                data-wordmark
+                aria-hidden="true"
+                style={{ "--ovs-brand-len": Math.max(Array.from(brand).length, 4) } as React.CSSProperties}
+              >
+                {Array.from(brand).map((ch, i) => (
+                  <span key={i}>{ch === " " ? "\u00A0" : ch}</span>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="ovs-wrap ovs-foot-bottom">
             <span>
