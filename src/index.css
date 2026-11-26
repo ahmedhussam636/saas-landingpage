@@ -2,4 +2,17 @@
 
 @theme {
   --color-primary: #E1E0CC;
+  --color-background: var(--ovs-paper, #f4f6f0);
+  --color-foreground: var(--ovs-ink, #10150d);
+  --color-card: var(--ovs-card, #ffffff);
+  --color-card-foreground: var(--ovs-ink, #10150d);
+  --color-muted: color-mix(in oklab, var(--ovs-ink, #10150d) 6%, transparent);
+  --color-muted-foreground: var(--ovs-ink2, #4b5546);
+  --color-border: var(--ovs-line, rgba(16, 21, 13, 0.12));
+  --color-ring: var(--ovs-accent, #3d6a12);
+  --color-chart-1: var(--ovs-accent, #3d6a12);
+  --color-chart-2: var(--ovs-leaf2, #6f9a2a);
+  --color-chart-3: var(--ovs-bark, #3b3424);
+  --color-chart-4: var(--ovs-soft, #c4dc52);
+  --color-chart-5: var(--ovs-forest, #0e1a10);
 }

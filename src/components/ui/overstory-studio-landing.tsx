@@ -49,6 +49,7 @@ import { WorkSection } from "./overstory/sections/WorkSection"
 import { ProcessSection } from "./overstory/sections/ProcessSection"
 import { QuotesSection } from "./overstory/sections/QuotesSection"
 import { FaqSection } from "./overstory/sections/FaqSection"
+import { TeamSection } from "./overstory/sections/TeamSection"
 import { FinaleSection } from "./overstory/sections/FinaleSection"
 import { FooterSection } from "./overstory/sections/FooterSection"
 
@@ -386,6 +387,7 @@ export default function OverstoryStudioLanding({
           email={email}
           copyEmail={copyEmail}
         />
+        <TeamSection uid={uid} brand={brand} still={still} book={book} />
         <FinaleSection
           uid={uid}
           cta={cta}
