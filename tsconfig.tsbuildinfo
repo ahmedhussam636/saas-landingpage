@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/components/ui/overstory-studio-landing.tsx","./src/demos/demo-autumn.tsx"],"version":"5.9.3"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/ui/overstory-studio-landing.tsx","./src/components/ui/prisma-hero.tsx","./src/demos/demo-autumn.tsx"],"version":"5.9.3"}
