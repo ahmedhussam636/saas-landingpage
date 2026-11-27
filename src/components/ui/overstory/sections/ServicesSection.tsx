@@ -1,5 +1,8 @@
+import * as React from "react"
+import { motion } from "framer-motion"
 import type { OvsService } from "../types"
 import { ServiceArt } from "../illustrations"
+import { OVS_EASE, OVS_VIEWPORT } from "../motion"
 import { Kicker, Split } from "../marks"
 
 interface ServicesSectionProps {
@@ -48,7 +51,16 @@ export function ServicesSection({
                 {svcItems.map((s, i) => {
                   const open = svcOpen === i
                   return (
-                    <div key={s.title} className="ovs-svc-row" data-open={open ? "" : undefined} onPointerEnter={() => setSvcHover(i)}>
+                    <motion.div
+                      key={s.title}
+                      className="ovs-svc-row"
+                      data-open={open ? "" : undefined}
+                      onPointerEnter={() => setSvcHover(i)}
+                      initial={{ opacity: 0, y: 26 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={OVS_VIEWPORT}
+                      transition={{ duration: 0.65, delay: i * 0.06, ease: OVS_EASE }}
+                    >
                       <h3 className="ovs-svc-h">
                         <button type="button" aria-expanded={open} aria-controls={uid + "svc" + i} onClick={() => setSvcOpen(open ? -1 : i)} onFocus={() => setSvcHover(i)}>
                           <span className="ovs-svc-n">0{i + 1}</span>
@@ -62,14 +74,21 @@ export function ServicesSection({
                           <div className="ovs-svc-body">
                             <p>{s.text}</p>
                             <ul>
-                              {s.tags.map((t) => (
-                                <li key={t}>{t}</li>
+                              {s.tags.map((t, ti) => (
+                                <motion.li
+                                  key={t}
+                                  initial={false}
+                                  animate={open ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+                                  transition={{ duration: 0.35, delay: open ? 0.1 + ti * 0.04 : 0, ease: OVS_EASE }}
+                                >
+                                  {t}
+                                </motion.li>
                               ))}
                             </ul>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   )
                 })}
               </div>

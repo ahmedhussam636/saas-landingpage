@@ -52,29 +52,38 @@ export function useOverstoryScroll({
           return () => r.removeAttribute("data-still")
         }
 
+        if (!heroEl) return
+
         /* 1. arrival: words rise, then the trees close in around the sky */
+        const navIn = q(".ovs-nav-in")
+        const statusEl = q("[data-hero] .ovs-status")
+        const heroLines = q("[data-hero] .ovs-line > span")
+        const trustedEl = q("[data-hero] .ovs-trusted")
+        const logoEls = q("[data-hero] .ovs-logos .ovs-logo")
+        const cueEl = q("[data-hero] .ovs-cue")
+
         const intro = gsap.timeline({ defaults: { ease: "expo.out" } })
-        intro
-          .fromTo(q(".ovs-nav-in"), { y: -28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.2 }, 0.2)
-          .fromTo(q("[data-hero] .ovs-status"), { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.25)
-          .fromTo(q("[data-hero] .ovs-line > span"), { yPercent: 115, rotate: 2.5 }, { yPercent: 0, rotate: 0, duration: 1.5, stagger: 0.12 }, 0.3)
-          .fromTo(q("[data-hero] .ovs-trusted"), { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.9)
-          .fromTo(q("[data-hero] .ovs-logos .ovs-logo"), { y: 22, autoAlpha: 0, filter: "blur(8px)" }, { y: 0, autoAlpha: 1, filter: "blur(0px)", duration: 1.1, stagger: 0.07, clearProps: "filter" }, 1.0)
-          .fromTo(q("[data-hero] .ovs-cue"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, 1.6)
-        gsap.set(heroLayers, { autoAlpha: 0 })
-        if (!photoMode) gsap.set(q("[data-hero] [data-sky]"), { scale: 1.08 })
+        if (navIn.length) intro.fromTo(navIn, { y: -28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.2 }, 0.2)
+        if (statusEl.length) intro.fromTo(statusEl, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.25)
+        if (heroLines.length) intro.fromTo(heroLines, { yPercent: 115, rotate: 2.5 }, { yPercent: 0, rotate: 0, duration: 1.5, stagger: 0.12 }, 0.3)
+        if (trustedEl.length) intro.fromTo(trustedEl, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.9)
+        if (logoEls.length) intro.fromTo(logoEls, { y: 22, autoAlpha: 0, filter: "blur(8px)" }, { y: 0, autoAlpha: 1, filter: "blur(0px)", duration: 1.1, stagger: 0.07, clearProps: "filter" }, 1.0)
+        if (cueEl.length) intro.fromTo(cueEl, { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, 1.6)
+        if (heroLayers.length) gsap.set(heroLayers, { autoAlpha: 0 })
+        const skyEl = q("[data-hero] [data-sky]")
+        if (!photoMode && skyEl.length) gsap.set(skyEl, { scale: 1.08 })
         let entered = false
         heroIn.current = () => {
           if (entered) return
           entered = true
           if (photoMode) {
             // the eye adjusting: the canopy comes into focus as it settles
-            gsap.set(heroLayers[1], { autoAlpha: 1 })
-            gsap.fromTo(heroLayers[0], { autoAlpha: 0, scale: 1.24, rotate: -4, filter: "blur(18px) brightness(1.25)" }, { autoAlpha: 1, scale: 1, rotate: 0, filter: "blur(0px) brightness(1)", duration: 2.9, ease: "expo.out", clearProps: "filter" })
+            if (heroLayers[1]) gsap.set(heroLayers[1], { autoAlpha: 1 })
+            if (heroLayers[0]) gsap.fromTo(heroLayers[0], { autoAlpha: 0, scale: 1.24, rotate: -4, filter: "blur(18px) brightness(1.25)" }, { autoAlpha: 1, scale: 1, rotate: 0, filter: "blur(0px) brightness(1)", duration: 2.9, ease: "expo.out", clearProps: "filter" })
             return
           }
-          gsap.to(q("[data-hero] [data-sky]"), { scale: 1, duration: 2.6, ease: "expo.out" })
-          gsap.fromTo(heroLayers, { autoAlpha: 0, scale: (i: number) => 1.45 + i * 0.28, rotate: (i: number) => (i % 2 ? -6 : 6) }, { autoAlpha: 1, scale: 1, rotate: 0, duration: 2.6, stagger: 0.14, ease: "expo.out" })
+          if (skyEl.length) gsap.to(skyEl, { scale: 1, duration: 2.6, ease: "expo.out" })
+          if (heroLayers.length) gsap.fromTo(heroLayers, { autoAlpha: 0, scale: (i: number) => 1.45 + i * 0.28, rotate: (i: number) => (i % 2 ? -6 : 6) }, { autoAlpha: 1, scale: 1, rotate: 0, duration: 2.6, stagger: 0.14, ease: "expo.out" })
         }
         if (heroReady.current) heroIn.current()
 
@@ -84,26 +93,32 @@ export function useOverstoryScroll({
         const rs = [2, -3, 5, -9]
         if (photoMode) {
           // into the gap in the trees, with the near leaves rushing past out of focus
-          rise
-            .to(heroZoom[0], { scale: 2.5, rotate: 6, ease: "power2.in", duration: 1 }, 0)
-            .fromTo(heroZoom[1], { scale: 1.04, opacity: 0 }, { scale: 3.6, opacity: 1, ease: "power2.in", duration: 0.7 }, 0.04)
-            .to(heroZoom[1], { opacity: 0, ease: "none", duration: 0.25 }, 0.74)
+          if (heroZoom[0]) rise.to(heroZoom[0], { scale: 2.5, rotate: 6, ease: "power2.in", duration: 1 }, 0)
+          if (heroZoom[1]) {
+            rise
+              .fromTo(heroZoom[1], { scale: 1.04, opacity: 0 }, { scale: 3.6, opacity: 1, ease: "power2.in", duration: 0.7 }, 0.04)
+              .to(heroZoom[1], { opacity: 0, ease: "none", duration: 0.25 }, 0.74)
+          }
         } else {
           heroZoom.forEach((z, i) => rise.to(z, { scale: zs[i], rotate: rs[i], ease: "power2.in", duration: 1 }, 0))
-          rise.to(q("[data-hero] [data-sky] canvas"), { scale: 1.22, ease: "none", duration: 1 }, 0)
+          const skyCanvas = q("[data-hero] [data-sky] canvas")
+          if (skyCanvas.length) rise.to(skyCanvas, { scale: 1.22, ease: "none", duration: 1 }, 0)
         }
-        rise
-          .to(q("[data-hero] .ovs-copy"), { y: () => -window.innerHeight * 0.16, scale: 0.92, autoAlpha: 0, filter: "blur(10px)", ease: "power1.in", duration: 0.5 }, 0.05)
-          .to(q("[data-hero] .ovs-cue"), { autoAlpha: 0, duration: 0.1 }, 0)
-          .fromTo(q("[data-hero] .ovs-veil"), { yPercent: 50 }, { yPercent: -50, ease: "power1.inOut", duration: 0.55 }, 0.45)
-          .fromTo(q("[data-hero] .ovs-above"), { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.25 }, 0.62)
+        const copyEl = q("[data-hero] .ovs-copy")
+        const veilEl = q("[data-hero] .ovs-veil")
+        const aboveEl = q("[data-hero] .ovs-above")
+        if (copyEl.length) rise.to(copyEl, { y: () => -window.innerHeight * 0.16, scale: 0.92, autoAlpha: 0, filter: "blur(10px)", ease: "power1.in", duration: 0.5 }, 0.05)
+        if (cueEl.length) rise.to(cueEl, { autoAlpha: 0, duration: 0.1 }, 0)
+        if (veilEl.length) rise.fromTo(veilEl, { yPercent: 50 }, { yPercent: -50, ease: "power1.inOut", duration: 0.55 }, 0.45)
+        if (aboveEl.length) rise.fromTo(aboveEl, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.25 }, 0.62)
 
         /* pointer parallax and a gust on click */
-        if (fine) {
+        if (fine && heroLayers.length) {
           const depth = photoMode ? [16, 48] : [8, 14, 24, 40]
           const xs = heroLayers.map((l) => gsap.quickTo(l, "x", { duration: 1.4, ease: "power3.out" }))
           const ys = heroLayers.map((l) => gsap.quickTo(l, "y", { duration: 1.4, ease: "power3.out" }))
-          const cx = gsap.quickTo(q("[data-hero] .ovs-copy"), "x", { duration: 1.6, ease: "power3.out" })
+          const copyTarget = copyEl[0]
+          const cx = copyTarget ? gsap.quickTo(copyTarget, "x", { duration: 1.6, ease: "power3.out" }) : null
           const onMove = (e: PointerEvent) => {
             const b = heroEl.getBoundingClientRect()
             const nx = (e.clientX - b.left) / b.width - 0.5
@@ -112,7 +127,7 @@ export function useOverstoryScroll({
               xs[i](-nx * depth[i])
               ys[i](-ny * depth[i] * 0.7)
             })
-            cx(nx * 6)
+            cx?.(nx * 6)
           }
           heroEl.addEventListener("pointermove", onMove)
           undo.push(() => heroEl.removeEventListener("pointermove", onMove))
@@ -152,17 +167,22 @@ export function useOverstoryScroll({
 
         /* 3. headings and blocks reveal as they arrive */
         q("[data-split]").forEach((h: Element) => {
-          gsap.fromTo(h.querySelectorAll("[data-w]"), { yPercent: 115, rotate: 3 }, { yPercent: 0, rotate: 0, duration: 1.3, stagger: 0.045, ease: "expo.out", scrollTrigger: { trigger: h, start: "top 88%", once: true } })
+          const ws = h.querySelectorAll("[data-w]")
+          if (ws.length) gsap.fromTo(ws, { yPercent: 115, rotate: 3 }, { yPercent: 0, rotate: 0, duration: 1.3, stagger: 0.045, ease: "expo.out", scrollTrigger: { trigger: h, start: "top 88%", once: true } })
         })
         const rv = q("[data-rv]") as HTMLElement[]
-        gsap.set(rv, { autoAlpha: 0, y: 34 })
-        ScrollTrigger.batch(rv, { start: "top 90%", once: true, onEnter: (b) => gsap.to(b, { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.08, ease: "expo.out", overwrite: true }) })
+        if (rv.length) {
+          gsap.set(rv, { autoAlpha: 0, y: 34 })
+          ScrollTrigger.batch(rv, { start: "top 90%", once: true, onEnter: (b) => gsap.to(b, { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.08, ease: "expo.out", overwrite: true }) })
+        }
 
         /* 4. manifesto reads itself in */
         const man = q("[data-manifesto]")[0]
         if (man) {
-          gsap.fromTo(man.querySelectorAll("[data-mw]"), { opacity: 0.12 }, { opacity: 1, stagger: 0.08, ease: "none", scrollTrigger: { trigger: man, start: "top 78%", end: "bottom 45%", scrub: true } })
-          gsap.fromTo(man.querySelectorAll(".ovs-pic"), { scale: 0, rotate: -12 }, { scale: 1, rotate: 0, ease: "back.out(2)", duration: 0.9, stagger: 0.2, scrollTrigger: { trigger: man, start: "top 60%", once: true } })
+          const mws = man.querySelectorAll("[data-mw]")
+          const pics = man.querySelectorAll(".ovs-pic")
+          if (mws.length) gsap.fromTo(mws, { opacity: 0.12 }, { opacity: 1, stagger: 0.08, ease: "none", scrollTrigger: { trigger: man, start: "top 78%", end: "bottom 45%", scrub: true } })
+          if (pics.length) gsap.fromTo(pics, { scale: 0, rotate: -12 }, { scale: 1, rotate: 0, ease: "back.out(2)", duration: 0.9, stagger: 0.2, scrollTrigger: { trigger: man, start: "top 60%", once: true } })
         }
         q("[data-count]").forEach((el: Element) => {
           const e = el as HTMLElement
@@ -175,8 +195,11 @@ export function useOverstoryScroll({
         q(".ovs-stat-rule").forEach((el: Element) => gsap.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: "expo.inOut", scrollTrigger: { trigger: el, start: "top 90%", once: true } }))
 
         /* 5. services: rows draw their rules, the preview follows the cursor */
-        gsap.fromTo(q(".ovs-svc-row"), { "--ovs-rule": 0 }, { "--ovs-rule": 1, duration: 1.4, stagger: 0.08, ease: "expo.inOut", scrollTrigger: { trigger: q(".ovs-svc-list")[0], start: "top 85%", once: true } })
+        const svcRows = q(".ovs-svc-row")
         const list = q(".ovs-svc-list")[0] as HTMLElement | undefined
+        if (svcRows.length && list) {
+          gsap.fromTo(svcRows, { "--ovs-rule": 0 }, { "--ovs-rule": 1, duration: 1.4, stagger: 0.08, ease: "expo.inOut", scrollTrigger: { trigger: list, start: "top 85%", once: true } })
+        }
         const prev = q(".ovs-svc-prev")[0] as HTMLElement | undefined
         if (fine && list && prev) {
           const px = gsap.quickTo(prev, "x", { duration: 0.6, ease: "power3.out" })
@@ -217,7 +240,7 @@ export function useOverstoryScroll({
           fit()
           ScrollTrigger.addEventListener("refreshInit", fit)
           const cards = q("[data-card]") as HTMLElement[]
-          const skew = gsap.quickTo(cards, "skewX", { duration: 0.5, ease: "power3.out" })
+          const skew = cards.length ? gsap.quickTo(cards, "skewX", { duration: 0.5, ease: "power3.out" }) : null
           const slide = gsap.to(track, {
             x: () => -dist(),
             ease: "none",
@@ -228,13 +251,13 @@ export function useOverstoryScroll({
               scrub: 0.7,
               invalidateOnRefresh: true,
               onUpdate: (s) => {
-                skew(clamp(s.getVelocity() / -260, -6, 6))
+                skew?.(clamp(s.getVelocity() / -260, -6, 6))
                 setCaseIdx(stepAt(s.progress, cards.length))
                 const bar = q("[data-bar]")[0] as HTMLElement | undefined
                 if (bar) bar.style.transform = "scaleX(" + s.progress + ")"
               },
-              onLeave: () => skew(0),
-              onLeaveBack: () => skew(0),
+              onLeave: () => skew?.(0),
+              onLeaveBack: () => skew?.(0),
             },
           })
           cards.forEach((card) => {
@@ -251,15 +274,22 @@ export function useOverstoryScroll({
         /* 7. process: the tree grows with the steps */
         const proc = q("[data-process]")[0] as HTMLElement | undefined
         if (proc) {
-          const grow = gsap.timeline({ scrollTrigger: { trigger: proc.querySelector(".ovs-steps"), start: "top 65%", end: "bottom 70%", scrub: 0.8 } })
-          gsap.set(proc.querySelectorAll("[data-grow]"), { strokeDasharray: 1, strokeDashoffset: 1 })
-          gsap.set(proc.querySelectorAll("[data-leaves] > *"), { scale: 0, transformOrigin: "50% 50%" })
-          for (let s = 0; s < 4; s++) {
-            const stems = proc.querySelectorAll('[data-grow="' + s + '"]')
-            if (stems.length) grow.to(stems, { strokeDashoffset: 0, duration: 1, ease: "none" }, s)
-            grow.to(proc.querySelectorAll('[data-leaves="' + s + '"] > *'), { scale: 1, duration: 0.7, stagger: s === 3 ? 0.01 : 0.12, ease: "back.out(2.2)" }, s + 0.45)
+          const stepsEl = proc.querySelector(".ovs-steps")
+          const grow = stepsEl ? gsap.timeline({ scrollTrigger: { trigger: stepsEl, start: "top 65%", end: "bottom 70%", scrub: 0.8 } }) : null
+          const grows = proc.querySelectorAll("[data-grow]")
+          const leavesAll = proc.querySelectorAll("[data-leaves] > *")
+          if (grows.length) gsap.set(grows, { strokeDasharray: 1, strokeDashoffset: 1 })
+          if (leavesAll.length) gsap.set(leavesAll, { scale: 0, transformOrigin: "50% 50%" })
+          if (grow) {
+            for (let s = 0; s < 4; s++) {
+              const stems = proc.querySelectorAll('[data-grow="' + s + '"]')
+              const leaves = proc.querySelectorAll('[data-leaves="' + s + '"] > *')
+              if (stems.length) grow.to(stems, { strokeDashoffset: 0, duration: 1, ease: "none" }, s)
+              if (leaves.length) grow.to(leaves, { scale: 1, duration: 0.7, stagger: s === 3 ? 0.01 : 0.12, ease: "back.out(2.2)" }, s + 0.45)
+            }
+            const sunEl = proc.querySelector("[data-sun]")
+            if (sunEl) grow.fromTo(sunEl, { attr: { cy: 210 } }, { attr: { cy: 70 }, duration: 4, ease: "none" }, 0)
           }
-          grow.fromTo(proc.querySelector("[data-sun]"), { attr: { cy: 210 } }, { attr: { cy: 70 }, duration: 4, ease: "none" }, 0)
           proc.querySelectorAll(".ovs-step").forEach((st) => ScrollTrigger.create({ trigger: st, start: "top 62%", end: "bottom 62%", toggleClass: { targets: st, className: "ovs-on" } }))
         }
 
@@ -267,34 +297,39 @@ export function useOverstoryScroll({
         const fin = q("[data-fin]")[0] as HTMLElement | undefined
         if (fin) {
           const tl = gsap.timeline({ scrollTrigger: { trigger: fin, start: "top 75%", end: "bottom bottom", scrub: 0.9 } })
-          tl.fromTo(fin.querySelector(".ovs-window"), { "--ovs-wi": "9%", "--ovs-wr": "40px" }, { "--ovs-wi": "0%", "--ovs-wr": "0px", ease: "power2.inOut", duration: 0.6 }, 0)
+          const winEl = fin.querySelector(".ovs-window")
+          if (winEl) tl.fromTo(winEl, { "--ovs-wi": "9%", "--ovs-wr": "40px" }, { "--ovs-wi": "0%", "--ovs-wr": "0px", ease: "power2.inOut", duration: 0.6 }, 0)
           const fz = fin.querySelectorAll("[data-zoom]")
           if (fin.querySelector("[data-photo]")) {
             // the rise in reverse: down out of the sky, through the near leaves, into the ring
-            tl.fromTo(fz[0], { scale: 2.4, rotate: -6 }, { scale: 1, rotate: 0, ease: "power3.out", duration: 0.9 }, 0)
-            tl.fromTo(fz[1], { scale: 3.4, opacity: 1 }, { scale: 1.05, opacity: 0, ease: "power3.out", duration: 0.7 }, 0)
+            if (fz[0]) tl.fromTo(fz[0], { scale: 2.4, rotate: -6 }, { scale: 1, rotate: 0, ease: "power3.out", duration: 0.9 }, 0)
+            if (fz[1]) tl.fromTo(fz[1], { scale: 3.4, opacity: 1 }, { scale: 1.05, opacity: 0, ease: "power3.out", duration: 0.7 }, 0)
           } else {
             const from = [1.5, 1.9, 2.5, 3.4]
             fz.forEach((z, i) => tl.fromTo(z, { scale: from[i], rotate: i % 2 ? 6 : -6 }, { scale: 1, rotate: 0, ease: "power3.out", duration: 0.9 }, 0))
           }
-          tl.fromTo(fin.querySelector(".ovs-fin-copy"), { autoAlpha: 0, y: 60, scale: 0.94 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: "power2.out" }, 0.45)
+          const finCopy = fin.querySelector(".ovs-fin-copy")
+          if (finCopy) tl.fromTo(finCopy, { autoAlpha: 0, y: 60, scale: 0.94 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: "power2.out" }, 0.45)
         }
 
         /* 9. footer: the wordmark rises letter by letter */
         const wm = q("[data-wordmark]")[0] as HTMLElement | undefined
         if (wm) {
-          gsap.fromTo(
-            wm.querySelectorAll("span"),
-            { yPercent: 120 },
-            {
-              yPercent: 0,
-              duration: 1.4,
-              stagger: 0.05,
-              ease: "expo.out",
-              clearProps: "transform",
-              scrollTrigger: { trigger: wm.closest("footer") || wm, start: "top 92%", once: true },
-            },
-          )
+          const wmSpans = wm.querySelectorAll("span")
+          if (wmSpans.length) {
+            gsap.fromTo(
+              wmSpans,
+              { yPercent: 120 },
+              {
+                yPercent: 0,
+                duration: 1.4,
+                stagger: 0.05,
+                ease: "expo.out",
+                clearProps: "transform",
+                scrollTrigger: { trigger: wm.closest("footer") || wm, start: "top 92%", once: true },
+              },
+            )
+          }
         }
 
         return () => {
@@ -330,6 +365,7 @@ export function useOverstoryScroll({
   useIso(() => {
     if (still || !root.current) return
     const ws = root.current.querySelectorAll("[data-quote] [data-qw]")
+    if (!ws.length) return
     const t = gsap.fromTo(ws, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, stagger: 0.02, ease: "expo.out" })
     return () => {
       t.kill()

@@ -101,7 +101,9 @@ export function WordMorph({ words, still }: { words: string[]; still: boolean })
     }
     const ctx = gsap.context(() => {
       gsap.to(b, { width, duration: 0.7, ease: "expo.inOut" })
-      gsap.fromTo(w.children, { yPercent: 105, rotateX: -80, opacity: 0, filter: "blur(6px)" }, { yPercent: 0, rotateX: 0, opacity: 1, filter: "blur(0px)", duration: 0.9, stagger: 0.045, ease: "expo.out", delay: 0.12, clearProps: "filter" })
+      if (w.children.length) {
+        gsap.fromTo(w.children, { yPercent: 105, rotateX: -80, opacity: 0, filter: "blur(6px)" }, { yPercent: 0, rotateX: 0, opacity: 1, filter: "blur(0px)", duration: 0.9, stagger: 0.045, ease: "expo.out", delay: 0.12, clearProps: "filter" })
+      }
     })
     return () => ctx.revert()
   }, [i, still])
@@ -110,7 +112,7 @@ export function WordMorph({ words, still }: { words: string[]; still: boolean })
     if (still || words.length < 2) return
     const t = window.setInterval(() => {
       const w = word.current
-      if (paused.current || !w || document.hidden) return
+      if (paused.current || !w || !w.children.length || document.hidden) return
       gsap.to(w.children, {
         yPercent: -105,
         rotateX: 80,

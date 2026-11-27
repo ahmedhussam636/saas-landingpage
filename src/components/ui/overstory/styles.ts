@@ -193,8 +193,8 @@ export const OVS_CSS = `
 /* work */
 .ovs-work{position:relative;background:var(--ovs-paper)}
 .ovs-work-stage{padding:clamp(60px,8vw,110px) 0}
-.ovs-work[data-h] .ovs-work-stage{position:sticky;top:0;height:var(--ovs-h);min-height:640px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:96px 0 40px}
-.ovs-work-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:clamp(30px,4vw,48px)}
+.ovs-work[data-h] .ovs-work-stage{position:sticky;top:0;height:var(--ovs-h);min-height:660px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:86px 0 28px}
+.ovs-work-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:clamp(22px,3vw,38px)}
 .ovs-work-head .ovs-h2{font-size:clamp(34px,4.2vw,62px)}
 .ovs-work-meter{display:none;flex-direction:column;align-items:flex-end;gap:12px;min-width:180px}
 .ovs-work[data-h] .ovs-work-meter{display:flex}
@@ -204,9 +204,9 @@ export const OVS_CSS = `
 .ovs-track{display:flex;flex-direction:column;gap:28px;padding:0 clamp(20px,4vw,48px)}
 .ovs-work[data-h] .ovs-track{flex-direction:row;width:max-content;padding-left:max(clamp(20px,4vw,48px),calc((100vw - 1240px) / 2 + 48px));padding-right:clamp(20px,4vw,48px);will-change:transform}
 .ovs-card{flex:none;display:flex;flex-direction:column;width:100%;border-radius:28px;overflow:hidden;background:var(--ovs-card);border:1px solid var(--ovs-line);transform-origin:50% 100%}
-.ovs-work[data-h] .ovs-card{width:min(64vw,760px);height:min(calc(var(--ovs-h) - 370px),540px);min-height:360px}
+.ovs-work[data-h] .ovs-card{width:min(66vw,790px);height:min(calc(var(--ovs-h) - 270px),580px);min-height:440px}
 .ovs-card-link{display:flex;flex-direction:column;flex:1;min-height:0}
-.ovs-card-art{position:relative;flex:1;min-height:260px;overflow:hidden;background:radial-gradient(120% 90% at 80% 10%,var(--t1),var(--t2));display:flex;align-items:center;justify-content:center;padding:28px}
+.ovs-card-art{position:relative;flex:1 1 0%;min-height:220px;overflow:hidden;background:radial-gradient(120% 90% at 80% 10%,var(--t1),var(--t2));display:flex;align-items:center;justify-content:center;padding:24px}
 .ovs-root[data-scheme="dark"] .ovs-card-art{background:radial-gradient(120% 90% at 80% 10%,color-mix(in oklab,var(--t2) 60%,#000),color-mix(in oklab,var(--t2) 22%,#000))}
 .ovs-card-sun{position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(rgba(255,255,255,.75),transparent 70%);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
 .ovs-card:hover .ovs-card-sun{transform:translate(-40px,30px) scale(1.3)}

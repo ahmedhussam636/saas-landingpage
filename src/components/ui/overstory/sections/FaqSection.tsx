@@ -1,5 +1,7 @@
 import * as React from "react"
+import { motion } from "framer-motion"
 import type { OvsFaq } from "../types"
+import { OVS_EASE, ScrollParallax } from "../motion"
 import { Kicker, Split } from "../marks"
 
 interface FaqSectionProps {
@@ -26,7 +28,7 @@ export function FaqSection({
 
           <section className="ovs-sec ovs-faq" data-sec="faq" aria-labelledby={uid + "fq"}>
             <div className="ovs-wrap ovs-faq-grid">
-              <div>
+              <ScrollParallax offset={16}>
                 <Kicker n="06" text={fq.kicker} />
                 <span id={uid + "fq"}>
                   <Split text={fq.title} className="ovs-h2" />
@@ -37,7 +39,7 @@ export function FaqSection({
                     <span aria-live="polite">{copied ? "Copied to clipboard" : email}</span>
                   </button>
                 </div>
-              </div>
+              </ScrollParallax>
               <div className="ovs-acc">
                 {fq.items.map((f, i) => {
                   const open = faqOpen === i
@@ -51,7 +53,13 @@ export function FaqSection({
                       </h3>
                       <div id={uid + "fa" + i} className="ovs-fold" role="region" aria-label={f.q}>
                         <div>
-                          <p>{f.a}</p>
+                          <motion.p
+                            initial={false}
+                            animate={open ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
+                            transition={{ duration: 0.35, ease: OVS_EASE }}
+                          >
+                            {f.a}
+                          </motion.p>
                         </div>
                       </div>
                     </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { MotionConfig } from "framer-motion"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import type {
@@ -39,6 +40,7 @@ import { isEmail } from "./overstory/canopy"
 import { readScheme } from "./overstory/marks"
 import { OVS_CSS } from "./overstory/styles"
 import { OVS_PHOTO } from "./overstory/photo"
+import { ScrollProgressBar } from "./overstory/motion"
 import { useOverstoryScroll } from "./overstory/useOverstoryScroll"
 import { NavSection } from "./overstory/sections/NavSection"
 import { HeroSection } from "./overstory/sections/HeroSection"
@@ -302,11 +304,13 @@ export default function OverstoryStudioLanding({
   } as React.CSSProperties
 
   return (
-    <div ref={root} className={"ovs-root " + className} data-scheme={scheme} data-season={season} data-photo={usePhoto ? "" : undefined} data-menu={menu ? "" : undefined} style={style}>
-      <style>{OVS_CSS}</style>
-      <a className="ovs-skip" href={"#" + uid + "main"}>
-        Skip to content
-      </a>
+    <MotionConfig reducedMotion="user">
+      <div ref={root} className={"ovs-root " + className} data-scheme={scheme} data-season={season} data-photo={usePhoto ? "" : undefined} data-menu={menu ? "" : undefined} style={style}>
+        <style>{OVS_CSS}</style>
+        <ScrollProgressBar />
+        <a className="ovs-skip" href={"#" + uid + "main"}>
+          Skip to content
+        </a>
 
       <NavSection
         uid={uid}
@@ -424,6 +428,7 @@ export default function OverstoryStudioLanding({
         subscribe={subscribe}
         go={go}
       />
-    </div>
+      </div>
+    </MotionConfig>
   )
 }

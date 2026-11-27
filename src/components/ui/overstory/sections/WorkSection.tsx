@@ -1,6 +1,8 @@
 import * as React from "react"
+import { motion } from "framer-motion"
 import type { OvsCase } from "../types"
 import { CaseMock } from "../illustrations"
+import { OVS_EASE, OVS_VIEWPORT } from "../motion"
 import { Arrow, BrandMark, Kicker, Mark, Split } from "../marks"
 
 interface WorkSectionProps {
@@ -41,7 +43,13 @@ export function WorkSection({ uid, wk, caseIdx, go, book }: WorkSectionProps) {
                         <span className="ovs-card-sun" />
                         <CaseMock mock={c.mock} name={c.client} />
                       </div>
-                      <div className="ovs-card-meta">
+                      <motion.div
+                        className="ovs-card-meta"
+                        initial={{ opacity: 0, y: 18 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={OVS_VIEWPORT}
+                        transition={{ duration: 0.65, delay: 0.08, ease: OVS_EASE }}
+                      >
                         <p className="ovs-card-client">
                           <Mark kind={c.mark} uid={uid + "c" + i} />
                           {c.client}
@@ -54,18 +62,26 @@ export function WorkSection({ uid, wk, caseIdx, go, book }: WorkSectionProps) {
                           <b>{c.metric}</b>
                           <span>{c.metricLabel}</span>
                         </p>
-                      </div>
+                      </motion.div>
                     </a>
                   </article>
                 ))}
                 <article className="ovs-card ovs-card-next" data-card>
-                  <a href="#contact" onClick={book("work")} className="ovs-card-link">
+                  <motion.a
+                    href="#contact"
+                    onClick={book("work")}
+                    className="ovs-card-link"
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={OVS_VIEWPORT}
+                    transition={{ duration: 0.7, ease: OVS_EASE }}
+                  >
                     <BrandMark />
                     <span className="ovs-card-next-t">{wk.next}</span>
                     <span className="ovs-btn ovs-btn-dark">
                       Start a project <Arrow />
                     </span>
-                  </a>
+                  </motion.a>
                 </article>
               </div>
             </div>

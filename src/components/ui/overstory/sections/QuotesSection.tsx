@@ -1,6 +1,7 @@
 import * as React from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import type { OvsPalette, OvsQuote, OvsSeason } from "../types"
-import { Canopy, PhotoCanopy } from "../canopy"
+import { OVS_EASE, OVS_VIEWPORT, ScrollReveal } from "../motion"
 import { Arrow, Mark } from "../marks"
 
 interface QuotesSectionProps {
@@ -63,35 +64,58 @@ export function QuotesSection({
                     ))}
                   </p>
                 </blockquote>
-                <figcaption>
-                  <span className="ovs-avatar">{curQuote.name.split(" ").map((p) => p[0]).join("").slice(0, 2)}</span>
-                  <span>
-                    <b>{curQuote.name}</b>
-                    <span>{curQuote.role}</span>
-                  </span>
-                  <span className="ovs-quote-mark">
-                    <Mark kind={curQuote.mark} uid={uid + "q"} />
-                  </span>
-                </figcaption>
+                <AnimatePresence mode="wait">
+                  <motion.figcaption
+                    key={curQuote.name}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    viewport={OVS_VIEWPORT}
+                    transition={{ duration: 0.45, ease: OVS_EASE }}
+                  >
+                    <span className="ovs-avatar">{curQuote.name.split(" ").map((p) => p[0]).join("").slice(0, 2)}</span>
+                    <span>
+                      <b>{curQuote.name}</b>
+                      <span>{curQuote.role}</span>
+                    </span>
+                    <span className="ovs-quote-mark">
+                      <Mark kind={curQuote.mark} uid={uid + "q"} />
+                    </span>
+                  </motion.figcaption>
+                </AnimatePresence>
               </figure>
               {qs.length > 1 ? (
-                <div className="ovs-quote-nav">
-                  <button type="button" className="ovs-round" aria-label="Previous quote" onClick={() => setQuote((v) => (v - 1 + qs.length) % qs.length)}>
-                    <svg className="ovs-svg" viewBox="0 0 16 16" aria-hidden="true">
-                      <path d="M13 8H3m4-4L3 8l4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                  <div className="ovs-dots">
-                    {qs.map((qq, i) => (
-                      <button key={qq.name} type="button" aria-label={"Quote " + (i + 1) + " of " + qs.length} aria-current={i === quote ? "true" : undefined} onClick={() => setQuote(i)}>
-                        {i === quote ? <i key={quote} data-paused={quotePaused ? "" : undefined} onAnimationEnd={() => setQuote((v) => (v + 1) % qs.length)} /> : null}
-                      </button>
-                    ))}
+                <ScrollReveal y={20} delay={0.1}>
+                  <div className="ovs-quote-nav">
+                    <motion.button
+                      type="button"
+                      className="ovs-round"
+                      aria-label="Previous quote"
+                      whileTap={{ scale: 0.92 }}
+                      onClick={() => setQuote((v) => (v - 1 + qs.length) % qs.length)}
+                    >
+                      <svg className="ovs-svg" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M13 8H3m4-4L3 8l4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </motion.button>
+                    <div className="ovs-dots">
+                      {qs.map((qq, i) => (
+                        <button key={qq.name} type="button" aria-label={"Quote " + (i + 1) + " of " + qs.length} aria-current={i === quote ? "true" : undefined} onClick={() => setQuote(i)}>
+                          {i === quote ? <i key={quote} data-paused={quotePaused ? "" : undefined} onAnimationEnd={() => setQuote((v) => (v + 1) % qs.length)} /> : null}
+                        </button>
+                      ))}
+                    </div>
+                    <motion.button
+                      type="button"
+                      className="ovs-round"
+                      aria-label="Next quote"
+                      whileTap={{ scale: 0.92 }}
+                      onClick={() => setQuote((v) => (v + 1) % qs.length)}
+                    >
+                      <Arrow />
+                    </motion.button>
                   </div>
-                  <button type="button" className="ovs-round" aria-label="Next quote" onClick={() => setQuote((v) => (v + 1) % qs.length)}>
-                    <Arrow />
-                  </button>
-                </div>
+                </ScrollReveal>
               ) : null}
             </div>
           </section>

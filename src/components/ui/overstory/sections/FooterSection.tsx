@@ -1,6 +1,8 @@
 import * as React from "react"
+import { motion } from "framer-motion"
 import type { OvsLink } from "../types"
-import { Arrow, BrandMark, Clock } from "../marks"
+import { OVS_EASE, OVS_VIEWPORT } from "../motion"
+import { Clock } from "../marks"
 
 interface FooterSectionProps {
   uid: string
@@ -37,7 +39,15 @@ export function FooterSection({
         <footer className="ovs-foot">
           <div className="ovs-wrap">
             <div className="ovs-foot-top">
-              <form className="ovs-news" onSubmit={subscribe} noValidate>
+              <motion.form
+                className="ovs-news"
+                onSubmit={subscribe}
+                noValidate
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={OVS_VIEWPORT}
+                transition={{ duration: 0.7, ease: OVS_EASE }}
+              >
                 <label htmlFor={uid + "mail"}>Field notes, once a month. What we learn shipping for startups.</label>
                 <div className="ovs-news-row">
                   <input
@@ -60,10 +70,16 @@ export function FooterSection({
                 <p id={uid + "mailmsg"} className="ovs-news-msg" aria-live="polite" data-state={mailState}>
                   {mailState === "invalid" ? "That email does not look right." : mailState === "error" ? "Something went wrong. Try again?" : mailState === "done" ? "You are in. First notes land next month." : ""}
                 </p>
-              </form>
+              </motion.form>
               <div className="ovs-foot-cols">
-                {ft.columns.map((col) => (
-                  <div key={col.title}>
+                {ft.columns.map((col, idx) => (
+                  <motion.div
+                    key={col.title}
+                    initial={{ opacity: 0, y: 22 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={OVS_VIEWPORT}
+                    transition={{ duration: 0.65, delay: 0.06 * (idx + 1), ease: OVS_EASE }}
+                  >
                     <p>{col.title}</p>
                     <ul>
                       {col.links.map((l) => (
@@ -74,9 +90,14 @@ export function FooterSection({
                         </li>
                       ))}
                     </ul>
-                  </div>
+                  </motion.div>
                 ))}
-                <div>
+                <motion.div
+                  initial={{ opacity: 0, y: 22 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={OVS_VIEWPORT}
+                  transition={{ duration: 0.65, delay: 0.06 * (ft.columns.length + 1), ease: OVS_EASE }}
+                >
                   <p>{ft.city}</p>
                   <ul>
                     <li className="ovs-clock">
@@ -87,7 +108,7 @@ export function FooterSection({
                       <a href={"mailto:" + email}>{email}</a>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
               </div>
             </div>
           </div>
@@ -105,7 +126,13 @@ export function FooterSection({
               </div>
             </div>
           </div>
-          <div className="ovs-wrap ovs-foot-bottom">
+          <motion.div
+            className="ovs-wrap ovs-foot-bottom"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={OVS_VIEWPORT}
+            transition={{ duration: 0.6, ease: OVS_EASE }}
+          >
             <span>
               © {new Date().getFullYear()} {brand} Studio
             </span>
@@ -116,7 +143,7 @@ export function FooterSection({
                 <path d="M8 13V3M4 7l4-4 4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
-          </div>
+          </motion.div>
         </footer>
       
   )

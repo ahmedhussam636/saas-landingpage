@@ -1,7 +1,9 @@
 import * as React from "react"
+import { motion } from "framer-motion"
 import type { OvsLogo, OvsStat } from "../types"
 import { DEFAULT_MANIFESTO } from "../defaults"
 import { formatNumber, manifestoParts } from "../canopy"
+import { OVS_EASE, ScrollParallax } from "../motion"
 import { BrandMark, Kicker, Logo } from "../marks"
 
 interface ManifestoSectionProps {
@@ -52,17 +54,24 @@ export function ManifestoSection({ uid, logos, manifesto, stats }: ManifestoSect
                 )}
               </p>
               {stats && stats.length ? (
-                <dl className="ovs-stats">
-                  {stats.map((s) => (
-                    <div key={s.label} className="ovs-stat" data-rv>
-                      <span className="ovs-stat-rule" />
-                      <dd data-count={s.value} data-dec={s.decimals || 0} data-pre={s.prefix || ""} data-suf={s.suffix || ""}>
-                        {(s.prefix || "") + formatNumber(s.value, s.decimals || 0) + (s.suffix || "")}
-                      </dd>
-                      <dt>{s.label}</dt>
-                    </div>
-                  ))}
-                </dl>
+                <ScrollParallax offset={18}>
+                  <dl className="ovs-stats">
+                    {stats.map((s) => (
+                      <div key={s.label} className="ovs-stat" data-rv>
+                        <span className="ovs-stat-rule" />
+                        <motion.div
+                          whileHover={{ y: -4 }}
+                          transition={{ duration: 0.35, ease: OVS_EASE }}
+                        >
+                          <dd data-count={s.value} data-dec={s.decimals || 0} data-pre={s.prefix || ""} data-suf={s.suffix || ""}>
+                            {(s.prefix || "") + formatNumber(s.value, s.decimals || 0) + (s.suffix || "")}
+                          </dd>
+                          <dt>{s.label}</dt>
+                        </motion.div>
+                      </div>
+                    ))}
+                  </dl>
+                </ScrollParallax>
               ) : null}
             </div>
           </section>

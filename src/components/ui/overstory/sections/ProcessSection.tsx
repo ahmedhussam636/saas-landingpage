@@ -1,5 +1,7 @@
+import { motion } from "framer-motion"
 import type { OvsStep } from "../types"
 import { GrowingTree } from "../illustrations"
+import { OVS_EASE, OVS_VIEWPORT, ScrollParallax } from "../motion"
 import { Kicker, Split } from "../marks"
 
 interface ProcessSectionProps {
@@ -21,19 +23,29 @@ export function ProcessSection({ uid, pr, seed }: ProcessSectionProps) {
               <div className="ovs-proc-grid">
                 <div className="ovs-tree-col">
                   <div className="ovs-tree-stick">
-                    <GrowingTree seed={seed} />
+                    <ScrollParallax offset={20}>
+                      <GrowingTree seed={seed} />
+                    </ScrollParallax>
                   </div>
                 </div>
                 <ol className="ovs-steps">
                   {pr.steps.map((s, i) => (
                     <li key={s.name} className="ovs-step">
-                      <p className="ovs-step-k">
-                        <span>0{i + 1}</span>
-                        <b>{s.name}</b>
-                        <em>{s.when}</em>
-                      </p>
-                      <h3>{s.title}</h3>
-                      <p>{s.text}</p>
+                      <motion.div
+                        initial={{ opacity: 0, x: 24 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={OVS_VIEWPORT}
+                        transition={{ duration: 0.7, delay: i * 0.05, ease: OVS_EASE }}
+                        style={{ display: "flex", flexDirection: "column", gap: "14px" }}
+                      >
+                        <p className="ovs-step-k">
+                          <span>0{i + 1}</span>
+                          <b>{s.name}</b>
+                          <em>{s.when}</em>
+                        </p>
+                        <h3>{s.title}</h3>
+                        <p>{s.text}</p>
+                      </motion.div>
                     </li>
                   ))}
                 </ol>

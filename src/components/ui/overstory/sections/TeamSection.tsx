@@ -1,5 +1,6 @@
 import * as React from "react"
 import TeamLanyardRail, { type LanyardMember } from "@/components/ui/team-lanyard-rail"
+import { ScrollReveal } from "../motion"
 import { Kicker, Split } from "../marks"
 
 interface TeamSectionProps {
@@ -123,13 +124,13 @@ export function TeamSection({ uid, brand, still, book }: TeamSectionProps) {
         </div>
       </div>
 
-      <div className="mt-6">
+      <ScrollReveal className="mt-6" y={34} duration={0.8}>
         <TeamLanyardRail
           items={members}
           caption="Brush along the rail to meet someone, pull a badge down, click to flip it."
           autoplay={!still}
         />
-      </div>
+      </ScrollReveal>
     </section>
   )
 }

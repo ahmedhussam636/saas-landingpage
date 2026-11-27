@@ -30,7 +30,7 @@ export const WordsPullUp = ({ text, className = "", showAsterisk = false, style 
           >
             {word}
             {showAsterisk && isLast && (
-              <span className="absolute top-[0.65em] -right-[0.3em] text-[0.31em]">*</span>
+              <span className="absolute top-[0.16em] -right-[0.26em] text-[0.28em]">*</span>
             )}
           </motion.span>
         );
@@ -118,8 +118,8 @@ const PrismaHero = () => {
           <div className="grid grid-cols-12 items-end gap-4">
             <div className="col-span-12 lg:col-span-8">
               <h2
-                className="font-medium leading-[0.85] tracking-[-0.07em] text-[26vw] sm:text-[24vw] md:text-[22vw] lg:text-[20vw] xl:text-[19vw] 2xl:text-[20vw]"
-                style={{ color: "#E1E0CC" }}
+                className="max-w-full font-medium leading-[0.95] tracking-[-0.045em] text-[clamp(3.75rem,20vw,8.5rem)] sm:text-[clamp(5.5rem,19vw,10rem)] md:text-[clamp(7rem,18vw,12rem)] lg:text-[clamp(6.5rem,14.5vw,15rem)]"
+                style={{ color: "#E1E0CC", paddingRight: "0.14em" }}
               >
                 <WordsPullUp text="Codly" showAsterisk />
               </h2>
@@ -137,14 +137,25 @@ const PrismaHero = () => {
               </motion.p>
 
               <motion.button
+                type="button"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="group inline-flex items-center gap-2 self-start rounded-full bg-primary py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 sm:text-base"
+                onClick={() => document.querySelector('[data-sec="contact"]')?.scrollIntoView({ behavior: "smooth" })}
+                className="group inline-flex items-center gap-3 self-start rounded-full text-sm font-semibold transition-all hover:gap-4 hover:brightness-105 sm:text-base"
+                style={{
+                  backgroundColor: "var(--ovs-soft, #c4dc52)",
+                  color: "#10150d",
+                  padding: "6px 6px 6px 22px",
+                  boxShadow: "0 14px 32px -12px rgba(0, 0, 0, 0.55)",
+                }}
               >
-                Join the lab
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
-                  <ArrowRight className="h-4 w-4" style={{ color: "#E1E0CC" }} />
+                Call us
+                <span
+                  className="flex h-9 w-9 items-center justify-center rounded-full transition-transform group-hover:scale-110 sm:h-10 sm:w-10"
+                  style={{ backgroundColor: "#10150d" }}
+                >
+                  <ArrowRight className="h-4 w-4" style={{ color: "var(--ovs-soft, #c4dc52)" }} />
                 </span>
               </motion.button>
             </div>
