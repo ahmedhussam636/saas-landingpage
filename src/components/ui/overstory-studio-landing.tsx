@@ -50,8 +50,10 @@ import { WorkSection } from "./overstory/sections/WorkSection"
 import { ProcessSection } from "./overstory/sections/ProcessSection"
 import { QuotesSection } from "./overstory/sections/QuotesSection"
 import { FaqSection } from "./overstory/sections/FaqSection"
+import { BentoSection } from "./overstory/sections/BentoSection"
 import { FinaleSection } from "./overstory/sections/FinaleSection"
-import { FooterSection } from "./overstory/sections/FooterSection"
+import Skiper39 from "@/components/ui/skiper39"
+import Footer27 from "@/components/watermelon-ui/footer-27"
 
 const PrismaHero = React.lazy(() => import("@/components/ui/prisma-hero").then((m) => ({ default: m.PrismaHero })))
 const TeamSection = React.lazy(() => import("./overstory/sections/TeamSection").then((m) => ({ default: m.TeamSection })))
@@ -394,6 +396,16 @@ export default function OverstoryStudioLanding({
           email={email}
           copyEmail={copyEmail}
         />
+        <BentoSection
+          uid={uid}
+          brand={brand}
+          scheme={scheme}
+          onSchemeChange={(next) => setOverride(next)}
+          cases={wk?.items}
+          stats={stats ?? undefined}
+          steps={pr?.steps}
+          book={book}
+        />
         <React.Suspense fallback={<div className="min-h-[420px] w-full" />}>
           <TeamSection uid={uid} brand={brand} still={still} book={book} />
         </React.Suspense>
@@ -412,23 +424,17 @@ export default function OverstoryStudioLanding({
           book={book}
           onBook={onBook}
         />
+        <Skiper39 uid={uid} />
       </main>
-
-      <FooterSection
-        uid={uid}
-        brand={brand}
-        email={email}
-        root={root}
-        still={still}
-        ft={ft}
-        mail={mail}
-        setMail={setMail}
-        mailState={mailState}
-        setMailState={setMailState}
-        subscribe={subscribe}
-        go={go}
-      />
       </div>
+      {ft ? (
+        <Footer27
+          brand={brand}
+          email={email}
+          onNavigate={(href, e) => go(href)(e)}
+          onBook={onBook ? book : undefined}
+        />
+      ) : null}
     </MotionConfig>
   )
 }

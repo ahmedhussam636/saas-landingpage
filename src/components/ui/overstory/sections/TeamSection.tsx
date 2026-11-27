@@ -111,7 +111,7 @@ export function TeamSection({ uid, brand, still, book }: TeamSectionProps) {
       <div className="ovs-wrap">
         <div className="ovs-head">
           <div>
-            <Kicker n="07" text="The crew" />
+            <Kicker n="08" text="The crew" />
             <span id={uid + "tm"}>
               <Split text="Senior people, small crew. Flip a badge to meet us." className="ovs-h2" />
             </span>
