@@ -1,5 +1,10 @@
 import * as React from "react"
-import { ArrowLeft, Check, Copy } from "lucide-react"
+import { ArrowLeft, Check, Copy, SlidersHorizontal } from "lucide-react"
+import { Toggle } from "@/components/ui/toggle"
+import {
+  COOKIE_CONSENT_KEY,
+  COOKIE_RESET_EVENT,
+} from "@/components/ui/cookie-notice"
 import { Kicker, Split } from "../marks"
 
 interface LegalClause {
@@ -11,8 +16,10 @@ interface LegalClause {
   bullets?: string[]
 }
 
+export type LegalMode = "terms" | "privacy" | "cookies"
+
 interface LegalPageProps {
-  mode: "terms" | "privacy"
+  mode: LegalMode
   uid: string
   brand: string
   email: string
@@ -108,8 +115,8 @@ function getPrivacyClauses(brand: string, email: string): LegalClause[] {
       title: "Local storage & cookies",
       summary: "Your theme and crowd-walk choice stay in your browser. No ad trackers",
       paragraphs: [
-        `${brand} uses browser localStorage solely to remember lightweight interface preferences—such as whether you joined the interactive community crowd walk and your preferred light/dark theme.`,
-        "You can clear localStorage or reset the interactive crowd state at any time directly inside your browser settings or via the on-page Reset control.",
+        `${brand} uses browser localStorage solely to remember lightweight interface preferences—such as whether you joined the interactive community crowd walk, your cookie consent decision, and your preferred light/dark theme.`,
+        "You can clear localStorage, adjust consent preferences on our Cookie Policy page, or reset the interactive crowd state at any time directly inside your browser.",
       ],
     },
     {
@@ -148,6 +155,66 @@ function getPrivacyClauses(brand: string, email: string): LegalClause[] {
   ]
 }
 
+function getCookieClauses(brand: string): LegalClause[] {
+  return [
+    {
+      id: "what-are-cookies",
+      num: "01",
+      title: "What cookies & local storage we use",
+      summary: "Lightweight browser storage only—never invasive cross-site tracking",
+      paragraphs: [
+        `Cookies and browser localStorage are small pieces of data stored locally on your device. ${brand} keeps storage strictly minimal so the site loads quickly and remembers the choices you make during a visit.`,
+        "We do not run third-party advertising pixels, behavioral retargeting scripts, or cross-site data brokers on this website.",
+      ],
+    },
+    {
+      id: "essential-storage",
+      num: "02",
+      title: "Essential & functional keys",
+      summary: "Remembers your consent banner decision and page state",
+      paragraphs: [
+        "Essential storage keys are necessary for core site behavior and remembering the privacy preferences you selected in the notification banner.",
+      ],
+      bullets: [
+        "codly_cookie_consent — remembers whether you accepted or declined optional preference storage.",
+        "Session routing & navigation state — preserves clean client-side scrolling when switching between legal pages and sections.",
+      ],
+    },
+    {
+      id: "interface-preferences",
+      num: "03",
+      title: "Experience & community preferences",
+      summary: "Stores your community walk count and visual preferences locally",
+      paragraphs: [
+        "When enabled, preference storage keeps playful and ergonomic touches consistent across reloads without sending personal identifiers to a server.",
+      ],
+      bullets: [
+        "codly_crowd_count — saves how many community members are currently walking in the Join our community stage.",
+        "codly_crowd_joined — prevents automatically re-incrementing the counter after your first visit.",
+        "Light / dark scheme state — honors your chosen palette or your device prefers-color-scheme setting.",
+      ],
+    },
+    {
+      id: "no-ad-trackers",
+      num: "04",
+      title: "No third-party ad networks",
+      summary: "Zero ad cookies, fingerprinting or third-party data reselling",
+      paragraphs: [
+        `${brand} does not place third-party advertising cookies on your browser or sell browsing behavior to third parties. External font and CDN assets are fetched strictly to render typography and interactive visuals.`,
+      ],
+    },
+    {
+      id: "manage-cookies",
+      num: "05",
+      title: "Managing or clearing your choices",
+      summary: "Update your choice below or clear browser storage anytime",
+      paragraphs: [
+        "You can change your cookie preference anytime using the interactive controls below, reopen the cookie notice popup, or clear site data directly in Chrome, Safari, Firefox, or Edge settings.",
+      ],
+    },
+  ]
+}
+
 export function LegalPage({
   mode,
   uid,
@@ -158,12 +225,21 @@ export function LegalPage({
   go,
   book,
 }: LegalPageProps) {
-  const isTerms = mode === "terms"
-  const clauses = React.useMemo(
-    () => (isTerms ? getTermsClauses(brand, email) : getPrivacyClauses(brand, email)),
-    [isTerms, brand, email],
-  )
+  const clauses = React.useMemo(() => {
+    if (mode === "terms") return getTermsClauses(brand, email)
+    if (mode === "cookies") return getCookieClauses(brand)
+    return getPrivacyClauses(brand, email)
+  }, [mode, brand, email])
+
   const [active, setActive] = React.useState(clauses[0]?.id ?? "")
+  const [prefsEnabled, setPrefsEnabled] = React.useState<boolean>(() => {
+    if (typeof window === "undefined") return true
+    try {
+      return window.localStorage.getItem(COOKIE_CONSENT_KEY) !== "declined"
+    } catch {
+      return true
+    }
+  })
 
   // Mark the clause currently in the reading zone as the active entry in the contents list.
   React.useEffect(() => {
@@ -194,6 +270,41 @@ export function LegalPage({
     setActive(id)
   }
 
+  const togglePreferences = (next: boolean) => {
+    setPrefsEnabled(next)
+    try {
+      window.localStorage.setItem(
+        COOKIE_CONSENT_KEY,
+        next ? "accepted" : "declined",
+      )
+    } catch {
+      // ignore storage errors
+    }
+  }
+
+  const reopenBanner = () => {
+    try {
+      window.localStorage.removeItem(COOKIE_CONSENT_KEY)
+    } catch {
+      // ignore
+    }
+    window.dispatchEvent(new CustomEvent(COOKIE_RESET_EVENT))
+  }
+
+  const kickerText =
+    mode === "terms"
+      ? "Engagements and site use"
+      : mode === "cookies"
+        ? "Cookies and local preferences"
+        : "Data and browser storage"
+
+  const headingText =
+    mode === "terms"
+      ? "Terms and conditions in plain English"
+      : mode === "cookies"
+        ? "Cookies and local storage explained simply"
+        : "What we collect, why, and how to remove it"
+
   return (
     <>
       {/* ---------------------------------------------------------- header */}
@@ -217,33 +328,30 @@ export function LegalPage({
               <a
                 href="/terms"
                 onClick={go("/terms")}
-                aria-current={isTerms ? "page" : undefined}
+                aria-current={mode === "terms" ? "page" : undefined}
               >
                 Terms
               </a>
               <a
                 href="/privacy"
                 onClick={go("/privacy")}
-                aria-current={!isTerms ? "page" : undefined}
+                aria-current={mode === "privacy" ? "page" : undefined}
               >
                 Privacy
+              </a>
+              <a
+                href="/cookies"
+                onClick={go("/cookies")}
+                aria-current={mode === "cookies" ? "page" : undefined}
+              >
+                Cookies
               </a>
             </nav>
           </div>
 
-          <Kicker
-            n="Legal"
-            text={isTerms ? "Engagements and site use" : "Data and browser storage"}
-          />
+          <Kicker n="Legal" text={kickerText} />
           <span id={uid + "-legal-h"}>
-            <Split
-              text={
-                isTerms
-                  ? "Terms and conditions in plain English"
-                  : "What we collect, why, and how to remove it"
-              }
-              className="ovs-h2 ovs-h2-wide"
-            />
+            <Split text={headingText} className="ovs-h2 ovs-h2-wide" />
           </span>
 
           <p className="ovs-legal-meta" data-rv>
@@ -256,7 +364,13 @@ export function LegalPage({
       <section
         className="ovs-sec"
         style={{ paddingTop: "clamp(40px, 5vw, 80px)" }}
-        aria-label={isTerms ? "Terms sections" : "Privacy sections"}
+        aria-label={
+          mode === "terms"
+            ? "Terms sections"
+            : mode === "cookies"
+              ? "Cookie policy sections"
+              : "Privacy sections"
+        }
       >
         <div className="ovs-wrap">
           <div className="ovs-legal-grid">
@@ -309,8 +423,81 @@ export function LegalPage({
                 </article>
               ))}
 
+              {mode === "cookies" ? (
+                <div
+                  className="mt-4 rounded-2xl border p-6"
+                  style={{
+                    borderColor: "var(--ovs-line)",
+                    backgroundColor: "var(--ovs-card)",
+                  }}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <h3
+                        className="text-lg font-medium"
+                        style={{ color: "var(--ovs-ink)" }}
+                      >
+                        Cookie preferences
+                      </h3>
+                      <p
+                        className="mt-1 text-sm"
+                        style={{ color: "var(--ovs-ink2)" }}
+                      >
+                        Essential storage stays active; toggle preference memory
+                        or reopen the consent popup.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <Toggle
+                        pressed={prefsEnabled}
+                        onPressedChange={togglePreferences}
+                        variant="outline"
+                        size="sm"
+                        aria-label="Toggle preference cookies"
+                        style={{
+                          height: "36px",
+                          padding: "0 14px",
+                          borderRadius: "999px",
+                          border: "1px solid var(--ovs-line)",
+                          backgroundColor: prefsEnabled
+                            ? "var(--ovs-ink)"
+                            : "transparent",
+                          color: prefsEnabled
+                            ? "var(--ovs-paper)"
+                            : "var(--ovs-ink)",
+                          fontSize: "13px",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {prefsEnabled ? "Preferences: On" : "Preferences: Off"}
+                      </Toggle>
+
+                      <button
+                        type="button"
+                        className="ovs-btn ovs-btn-line"
+                        onClick={reopenBanner}
+                      >
+                        <SlidersHorizontal
+                          aria-hidden="true"
+                          className="size-4"
+                          strokeWidth={1.5}
+                        />
+                        <span>Open cookie banner</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
               <div className="ovs-legal-contact">
-                <h2>{isTerms ? "Questions about these terms" : "Questions about your data"}</h2>
+                <h2>
+                  {mode === "terms"
+                    ? "Questions about these terms"
+                    : mode === "cookies"
+                      ? "Questions about cookies"
+                      : "Questions about your data"}
+                </h2>
                 <p>
                   Write to {email} and a founder will answer. We can also sign
                   a custom MSA or DPA for your procurement team.

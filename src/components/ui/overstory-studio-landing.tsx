@@ -54,6 +54,7 @@ import { BentoSection } from "./overstory/sections/BentoSection"
 import { FinaleSection } from "./overstory/sections/FinaleSection"
 import { AboutPage } from "./overstory/sections/AboutPage"
 import { LegalPage } from "./overstory/sections/LegalPage"
+import AlertCookieNotice from "@/components/ui/cookie-notice"
 import Skiper39 from "@/components/ui/skiper39"
 import Footer27 from "@/components/watermelon-ui/footer-27"
 
@@ -157,7 +158,7 @@ export default function OverstoryStudioLanding({
   const [mail, setMail] = React.useState("")
   const [mailState, setMailState] = React.useState("idle" as "idle" | "sending" | "done" | "error" | "invalid")
   const [caseIdx, setCaseIdx] = React.useState(0)
-  type PageKey = "home" | "about" | "terms" | "privacy"
+  type PageKey = "home" | "about" | "terms" | "privacy" | "cookies"
   const readRoute = (): PageKey => {
     if (typeof window === "undefined") return "home"
     const p = window.location.pathname
@@ -165,6 +166,7 @@ export default function OverstoryStudioLanding({
     if (p === "/about" || h === "#about-page") return "about"
     if (p === "/terms" || h === "#terms") return "terms"
     if (p === "/privacy" || h === "#privacy") return "privacy"
+    if (p === "/cookies" || h === "#cookies" || h === "#cookie-policy") return "cookies"
     return "home"
   }
   const [page, setPage] = React.useState<PageKey>(readRoute)
@@ -203,6 +205,10 @@ export default function OverstoryStudioLanding({
       privacy: {
         title: `Privacy Policy — ${brand}`,
         description: `How ${brand} Studio handles inquiries, minimal browser storage, subprocessors, and your data privacy rights.`,
+      },
+      cookies: {
+        title: `Cookie Policy — ${brand}`,
+        description: `How ${brand} Studio uses minimal browser storage and essential cookies to remember your preferences.`,
       },
     }
     const meta = routeMeta[page]
@@ -245,13 +251,16 @@ export default function OverstoryStudioLanding({
 
   const go = React.useCallback((href?: string) => (e?: React.MouseEvent) => {
     if (!href) return
-    const routeTarget: Record<string, { page: "about" | "terms" | "privacy"; path: string }> = {
+    const routeTarget: Record<string, { page: Exclude<PageKey, "home">; path: string }> = {
       "/about": { page: "about", path: "/about" },
       "#about-page": { page: "about", path: "/about" },
       "/terms": { page: "terms", path: "/terms" },
       "#terms": { page: "terms", path: "/terms" },
       "/privacy": { page: "privacy", path: "/privacy" },
       "#privacy": { page: "privacy", path: "/privacy" },
+      "/cookies": { page: "cookies", path: "/cookies" },
+      "#cookies": { page: "cookies", path: "/cookies" },
+      "#cookie-policy": { page: "cookies", path: "/cookies" },
     }
     const target = routeTarget[href]
     if (target) {
@@ -492,7 +501,7 @@ export default function OverstoryStudioLanding({
               onBook={onBook}
             />
           </>
-        ) : page === "terms" || page === "privacy" ? (
+        ) : page === "terms" || page === "privacy" || page === "cookies" ? (
           <LegalPage
             mode={page}
             uid={uid}
@@ -600,6 +609,7 @@ export default function OverstoryStudioLanding({
           </>
         )}
       </main>
+      <AlertCookieNotice still={still} onOpenPolicy={go("/cookies")} />
       </div>
       {ft ? (
         <Footer27

@@ -68,7 +68,7 @@ const DEFAULT_CODLY_THEMES: BentoThemeItem[] = [
 
 const WIDE_WIDTH = 320;
 
-const usePrefersReducedMotion = () => {
+export const usePrefersReducedMotion = () => {
   const [reduce, setReduce] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -81,7 +81,7 @@ const usePrefersReducedMotion = () => {
   return reduce;
 };
 
-const useSlotWidth = (ref: RefObject<HTMLElement | null>) => {
+export const useSlotWidth = (ref: RefObject<HTMLElement | null>) => {
   const [width, setWidth] = useState(0);
   useEffect(() => {
     const el = ref.current;
@@ -255,7 +255,7 @@ const ThemeToggleIllustration = ({
               gradientStopColor="var(--ovs-soft, #c4dc52)"
               className="z-0"
               duration={4}
-              active={active}
+              active={active && !reduceMotion}
             />
           )}
           {wide && (
@@ -269,7 +269,7 @@ const ThemeToggleIllustration = ({
               gradientStopColor="var(--ovs-soft, #c4dc52)"
               className="z-0"
               duration={4}
-              active={active}
+              active={active && !reduceMotion}
             />
           )}
           <ConnectionBeam
@@ -282,7 +282,7 @@ const ThemeToggleIllustration = ({
             gradientStopColor="var(--ovs-soft, #c4dc52)"
             className="z-0"
             duration={4}
-            active={active}
+            active={active && !reduceMotion}
           />
           <ConnectionBeam
             containerRef={containerRef}
@@ -295,7 +295,7 @@ const ThemeToggleIllustration = ({
             gradientStopColor="var(--ovs-soft, #c4dc52)"
             className="z-0"
             duration={4}
-            active={active}
+            active={active && !reduceMotion}
           />
           <ConnectionBeam
             containerRef={containerRef}
@@ -308,7 +308,7 @@ const ThemeToggleIllustration = ({
             gradientStopColor="var(--ovs-soft, #c4dc52)"
             className="z-0"
             duration={4}
-            active={active}
+            active={active && !reduceMotion}
           />
           <ConnectionBeam
             containerRef={containerRef}
@@ -321,7 +321,7 @@ const ThemeToggleIllustration = ({
             gradientStopColor="var(--ovs-soft, #c4dc52)"
             className="z-0"
             duration={4}
-            active={active}
+            active={active && !reduceMotion}
           />
         </>
       )}

@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #E1E0CC;
+  --color-primary: var(--ovs-ink, #10150d);
+  --color-primary-foreground: var(--ovs-paper, #f4f6f0);
+  --color-secondary: color-mix(in oklab, var(--ovs-ink, #10150d) 6%, transparent);
+  --color-secondary-foreground: var(--ovs-ink, #10150d);
+  --color-accent: color-mix(in oklab, var(--ovs-soft, #c4dc52) 28%, var(--ovs-card, #ffffff));
+  --color-accent-foreground: var(--ovs-ink, #10150d);
   --color-background: var(--ovs-paper, #f4f6f0);
   --color-foreground: var(--ovs-ink, #10150d);
   --color-card: var(--ovs-card, #ffffff);
@@ -9,6 +14,7 @@
   --color-muted: color-mix(in oklab, var(--ovs-ink, #10150d) 6%, transparent);
   --color-muted-foreground: var(--ovs-ink2, #4b5546);
   --color-border: var(--ovs-line, rgba(16, 21, 13, 0.12));
+  --color-input: var(--ovs-line, rgba(16, 21, 13, 0.12));
   --color-ring: var(--ovs-accent, #3d6a12);
   --color-chart-1: var(--ovs-accent, #3d6a12);
   --color-chart-2: var(--ovs-leaf2, #6f9a2a);

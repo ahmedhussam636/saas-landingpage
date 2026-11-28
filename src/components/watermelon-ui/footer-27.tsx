@@ -315,7 +315,7 @@ export default function Footer27({
             {[
               { label: "Privacy Policy", href: "/privacy" },
               { label: "Terms of Service", href: "/terms" },
-              { label: "Cookie Policy", href: "/privacy" },
+              { label: "Cookie Policy", href: "/cookies" },
             ].map((item) => (
               <a
                 key={item.label}
