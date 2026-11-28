@@ -8,6 +8,7 @@ interface UseOverstoryScrollArgs {
   root: React.RefObject<HTMLDivElement | null>
   still: boolean
   usePhoto: boolean
+  page?: string
   heroIn: React.MutableRefObject<null | (() => void)>
   heroReady: React.MutableRefObject<boolean>
   gust: React.MutableRefObject<null | ((x: number) => void)>
@@ -22,6 +23,7 @@ export function useOverstoryScroll({
   root,
   still,
   usePhoto,
+  page = "home",
   heroIn,
   heroReady,
   gust,
@@ -40,10 +42,9 @@ export function useOverstoryScroll({
       mm.add({ motion: "(prefers-reduced-motion: no-preference)", wide: "(min-width: 820px)", fine: "(hover: hover) and (pointer: fine)" }, (c) => {
         const { motion, wide, fine } = c.conditions as { motion: boolean; wide: boolean; fine: boolean }
         const q = gsap.utils.selector(r)
-        const heroEl = q("[data-hero]")[0] as HTMLElement
+        const heroEl = q("[data-hero]")[0] as HTMLElement | undefined
         const heroLayers = q("[data-hero] [data-layer]") as HTMLElement[]
         const heroZoom = q("[data-hero] [data-zoom]") as HTMLElement[]
-        const photoMode = !!heroEl.querySelector("[data-photo]")
         const undo = [] as (() => void)[]
 
         if (!motion) {
@@ -52,118 +53,122 @@ export function useOverstoryScroll({
           return () => r.removeAttribute("data-still")
         }
 
-        if (!heroEl) return
-
-        /* 1. arrival: words rise, then the trees close in around the sky */
         const navIn = q(".ovs-nav-in")
-        const statusEl = q("[data-hero] .ovs-status")
-        const heroLines = q("[data-hero] .ovs-line > span")
-        const trustedEl = q("[data-hero] .ovs-trusted")
-        const logoEls = q("[data-hero] .ovs-logos .ovs-logo")
-        const cueEl = q("[data-hero] .ovs-cue")
+        if (heroEl) {
+          const photoMode = !!heroEl.querySelector("[data-photo]")
 
-        const intro = gsap.timeline({ defaults: { ease: "expo.out" } })
-        if (navIn.length) intro.fromTo(navIn, { y: -28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.2 }, 0.2)
-        if (statusEl.length) intro.fromTo(statusEl, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.25)
-        if (heroLines.length) intro.fromTo(heroLines, { yPercent: 115, rotate: 2.5 }, { yPercent: 0, rotate: 0, duration: 1.5, stagger: 0.12 }, 0.3)
-        if (trustedEl.length) intro.fromTo(trustedEl, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.9)
-        if (logoEls.length) intro.fromTo(logoEls, { y: 22, autoAlpha: 0, filter: "blur(8px)" }, { y: 0, autoAlpha: 1, filter: "blur(0px)", duration: 1.1, stagger: 0.07, clearProps: "filter" }, 1.0)
-        if (cueEl.length) intro.fromTo(cueEl, { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, 1.6)
-        if (heroLayers.length) gsap.set(heroLayers, { autoAlpha: 0 })
-        const skyEl = q("[data-hero] [data-sky]")
-        if (!photoMode && skyEl.length) gsap.set(skyEl, { scale: 1.08 })
-        let entered = false
-        heroIn.current = () => {
-          if (entered) return
-          entered = true
+          /* 1. arrival: words rise, then the trees close in around the sky */
+          const statusEl = q("[data-hero] .ovs-status")
+          const heroLines = q("[data-hero] .ovs-line > span")
+          const trustedEl = q("[data-hero] .ovs-trusted")
+          const logoEls = q("[data-hero] .ovs-logos .ovs-logo")
+          const cueEl = q("[data-hero] .ovs-cue")
+
+          const intro = gsap.timeline({ defaults: { ease: "expo.out" } })
+          if (navIn.length) intro.fromTo(navIn, { y: -28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.2 }, 0.2)
+          if (statusEl.length) intro.fromTo(statusEl, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.25)
+          if (heroLines.length) intro.fromTo(heroLines, { yPercent: 115, rotate: 2.5 }, { yPercent: 0, rotate: 0, duration: 1.5, stagger: 0.12 }, 0.3)
+          if (trustedEl.length) intro.fromTo(trustedEl, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1 }, 0.9)
+          if (logoEls.length) intro.fromTo(logoEls, { y: 22, autoAlpha: 0, filter: "blur(8px)" }, { y: 0, autoAlpha: 1, filter: "blur(0px)", duration: 1.1, stagger: 0.07, clearProps: "filter" }, 1.0)
+          if (cueEl.length) intro.fromTo(cueEl, { autoAlpha: 0 }, { autoAlpha: 1, duration: 1 }, 1.6)
+          if (heroLayers.length) gsap.set(heroLayers, { autoAlpha: 0 })
+          const skyEl = q("[data-hero] [data-sky]")
+          if (!photoMode && skyEl.length) gsap.set(skyEl, { scale: 1.08 })
+          let entered = false
+          heroIn.current = () => {
+            if (entered) return
+            entered = true
+            if (photoMode) {
+              // the eye adjusting: the canopy comes into focus as it settles
+              if (heroLayers[1]) gsap.set(heroLayers[1], { autoAlpha: 1 })
+              if (heroLayers[0]) gsap.fromTo(heroLayers[0], { autoAlpha: 0, scale: 1.24, rotate: -4, filter: "blur(18px) brightness(1.25)" }, { autoAlpha: 1, scale: 1, rotate: 0, filter: "blur(0px) brightness(1)", duration: 2.9, ease: "expo.out", clearProps: "filter" })
+              return
+            }
+            if (skyEl.length) gsap.to(skyEl, { scale: 1, duration: 2.6, ease: "expo.out" })
+            if (heroLayers.length) gsap.fromTo(heroLayers, { autoAlpha: 0, scale: (i: number) => 1.45 + i * 0.28, rotate: (i: number) => (i % 2 ? -6 : 6) }, { autoAlpha: 1, scale: 1, rotate: 0, duration: 2.6, stagger: 0.14, ease: "expo.out" })
+          }
+          if (heroReady.current) heroIn.current()
+
+          /* 2. rise: scroll lifts you through the layers and out into open sky */
+          const rise = gsap.timeline({ scrollTrigger: { trigger: heroEl, start: "top top", end: "bottom bottom", scrub: 0.9 } })
+          const zs = [1.55, 1.95, 2.6, 3.6]
+          const rs = [2, -3, 5, -9]
           if (photoMode) {
-            // the eye adjusting: the canopy comes into focus as it settles
-            if (heroLayers[1]) gsap.set(heroLayers[1], { autoAlpha: 1 })
-            if (heroLayers[0]) gsap.fromTo(heroLayers[0], { autoAlpha: 0, scale: 1.24, rotate: -4, filter: "blur(18px) brightness(1.25)" }, { autoAlpha: 1, scale: 1, rotate: 0, filter: "blur(0px) brightness(1)", duration: 2.9, ease: "expo.out", clearProps: "filter" })
-            return
+            // into the gap in the trees, with the near leaves rushing past out of focus
+            if (heroZoom[0]) rise.to(heroZoom[0], { scale: 2.5, rotate: 6, ease: "power2.in", duration: 1 }, 0)
+            if (heroZoom[1]) {
+              rise
+                .fromTo(heroZoom[1], { scale: 1.04, opacity: 0 }, { scale: 3.6, opacity: 1, ease: "power2.in", duration: 0.7 }, 0.04)
+                .to(heroZoom[1], { opacity: 0, ease: "none", duration: 0.25 }, 0.74)
+            }
+          } else {
+            heroZoom.forEach((z, i) => rise.to(z, { scale: zs[i], rotate: rs[i], ease: "power2.in", duration: 1 }, 0))
+            const skyCanvas = q("[data-hero] [data-sky] canvas")
+            if (skyCanvas.length) rise.to(skyCanvas, { scale: 1.22, ease: "none", duration: 1 }, 0)
           }
-          if (skyEl.length) gsap.to(skyEl, { scale: 1, duration: 2.6, ease: "expo.out" })
-          if (heroLayers.length) gsap.fromTo(heroLayers, { autoAlpha: 0, scale: (i: number) => 1.45 + i * 0.28, rotate: (i: number) => (i % 2 ? -6 : 6) }, { autoAlpha: 1, scale: 1, rotate: 0, duration: 2.6, stagger: 0.14, ease: "expo.out" })
-        }
-        if (heroReady.current) heroIn.current()
+          const copyEl = q("[data-hero] .ovs-copy")
+          const veilEl = q("[data-hero] .ovs-veil")
+          const aboveEl = q("[data-hero] .ovs-above")
+          if (copyEl.length) rise.to(copyEl, { y: () => -window.innerHeight * 0.16, scale: 0.92, autoAlpha: 0, filter: "blur(10px)", ease: "power1.in", duration: 0.5 }, 0.05)
+          if (cueEl.length) rise.to(cueEl, { autoAlpha: 0, duration: 0.1 }, 0)
+          if (veilEl.length) rise.fromTo(veilEl, { yPercent: 50 }, { yPercent: -50, ease: "power1.inOut", duration: 0.55 }, 0.45)
+          if (aboveEl.length) rise.fromTo(aboveEl, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.25 }, 0.62)
 
-        /* 2. rise: scroll lifts you through the layers and out into open sky */
-        const rise = gsap.timeline({ scrollTrigger: { trigger: heroEl, start: "top top", end: "bottom bottom", scrub: 0.9 } })
-        const zs = [1.55, 1.95, 2.6, 3.6]
-        const rs = [2, -3, 5, -9]
-        if (photoMode) {
-          // into the gap in the trees, with the near leaves rushing past out of focus
-          if (heroZoom[0]) rise.to(heroZoom[0], { scale: 2.5, rotate: 6, ease: "power2.in", duration: 1 }, 0)
-          if (heroZoom[1]) {
-            rise
-              .fromTo(heroZoom[1], { scale: 1.04, opacity: 0 }, { scale: 3.6, opacity: 1, ease: "power2.in", duration: 0.7 }, 0.04)
-              .to(heroZoom[1], { opacity: 0, ease: "none", duration: 0.25 }, 0.74)
+          /* pointer parallax and a gust on click */
+          if (fine && heroLayers.length) {
+            const depth = photoMode ? [16, 48] : [8, 14, 24, 40]
+            const xs = heroLayers.map((l) => gsap.quickTo(l, "x", { duration: 1.4, ease: "power3.out" }))
+            const ys = heroLayers.map((l) => gsap.quickTo(l, "y", { duration: 1.4, ease: "power3.out" }))
+            const copyTarget = copyEl[0]
+            const cx = copyTarget ? gsap.quickTo(copyTarget, "x", { duration: 1.6, ease: "power3.out" }) : null
+            const onMove = (e: PointerEvent) => {
+              const b = heroEl.getBoundingClientRect()
+              const nx = (e.clientX - b.left) / b.width - 0.5
+              const ny = (e.clientY - b.top) / window.innerHeight - 0.5
+              heroLayers.forEach((_, i) => {
+                xs[i](-nx * depth[i])
+                ys[i](-ny * depth[i] * 0.7)
+              })
+              cx?.(nx * 6)
+            }
+            heroEl.addEventListener("pointermove", onMove)
+            undo.push(() => heroEl.removeEventListener("pointermove", onMove))
           }
-        } else {
-          heroZoom.forEach((z, i) => rise.to(z, { scale: zs[i], rotate: rs[i], ease: "power2.in", duration: 1 }, 0))
-          const skyCanvas = q("[data-hero] [data-sky] canvas")
-          if (skyCanvas.length) rise.to(skyCanvas, { scale: 1.22, ease: "none", duration: 1 }, 0)
-        }
-        const copyEl = q("[data-hero] .ovs-copy")
-        const veilEl = q("[data-hero] .ovs-veil")
-        const aboveEl = q("[data-hero] .ovs-above")
-        if (copyEl.length) rise.to(copyEl, { y: () => -window.innerHeight * 0.16, scale: 0.92, autoAlpha: 0, filter: "blur(10px)", ease: "power1.in", duration: 0.5 }, 0.05)
-        if (cueEl.length) rise.to(cueEl, { autoAlpha: 0, duration: 0.1 }, 0)
-        if (veilEl.length) rise.fromTo(veilEl, { yPercent: 50 }, { yPercent: -50, ease: "power1.inOut", duration: 0.55 }, 0.45)
-        if (aboveEl.length) rise.fromTo(aboveEl, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.25 }, 0.62)
-
-        /* pointer parallax and a gust on click */
-        if (fine && heroLayers.length) {
-          const depth = photoMode ? [16, 48] : [8, 14, 24, 40]
-          const xs = heroLayers.map((l) => gsap.quickTo(l, "x", { duration: 1.4, ease: "power3.out" }))
-          const ys = heroLayers.map((l) => gsap.quickTo(l, "y", { duration: 1.4, ease: "power3.out" }))
-          const copyTarget = copyEl[0]
-          const cx = copyTarget ? gsap.quickTo(copyTarget, "x", { duration: 1.6, ease: "power3.out" }) : null
-          const onMove = (e: PointerEvent) => {
-            const b = heroEl.getBoundingClientRect()
-            const nx = (e.clientX - b.left) / b.width - 0.5
-            const ny = (e.clientY - b.top) / window.innerHeight - 0.5
-            heroLayers.forEach((_, i) => {
-              xs[i](-nx * depth[i])
-              ys[i](-ny * depth[i] * 0.7)
+          gust.current = (x: number) => {
+            const dir = x < 0.5 ? 1 : -1
+            heroLayers.forEach((l, i) => {
+              gsap.timeline()
+                .to(l, { rotate: dir * (0.6 + i * 0.5), duration: 0.35 + i * 0.05, ease: "power2.out" })
+                .to(l, { rotate: 0, duration: 1.6, ease: "elastic.out(1,0.35)" })
             })
-            cx?.(nx * 6)
+            const burst = q("[data-hero] [data-fall='burst']") as HTMLElement[]
+            burst.forEach((leaf, i) => {
+              const b = heroEl.getBoundingClientRect()
+              gsap.killTweensOf(leaf)
+              gsap.fromTo(
+                leaf,
+                { x: b.width * (0.15 + Math.random() * 0.7), y: -40, rotate: Math.random() * 360, autoAlpha: 1 },
+                { x: "+=" + (dir * (80 + Math.random() * 220)), y: window.innerHeight * (0.7 + Math.random() * 0.5), rotate: "+=" + (220 + Math.random() * 300), duration: 3.2 + Math.random() * 2, delay: i * 0.06, ease: "power1.in", onComplete: () => { gsap.set(leaf, { autoAlpha: 0 }) } },
+              )
+            })
           }
-          heroEl.addEventListener("pointermove", onMove)
-          undo.push(() => heroEl.removeEventListener("pointermove", onMove))
-        }
-        gust.current = (x: number) => {
-          const dir = x < 0.5 ? 1 : -1
-          heroLayers.forEach((l, i) => {
-            gsap.timeline()
-              .to(l, { rotate: dir * (0.6 + i * 0.5), duration: 0.35 + i * 0.05, ease: "power2.out" })
-              .to(l, { rotate: 0, duration: 1.6, ease: "elastic.out(1,0.35)" })
-          })
-          const burst = q("[data-hero] [data-fall='burst']") as HTMLElement[]
-          burst.forEach((leaf, i) => {
+          undo.push(() => (gust.current = null))
+
+          /* falling leaves, always a few in the air */
+          const falling = q("[data-hero] [data-fall='idle']") as HTMLElement[]
+          const fall = (leaf: HTMLElement, delay: number) => {
             const b = heroEl.getBoundingClientRect()
-            gsap.killTweensOf(leaf)
             gsap.fromTo(
               leaf,
-              { x: b.width * (0.15 + Math.random() * 0.7), y: -40, rotate: Math.random() * 360, autoAlpha: 1 },
-              { x: "+=" + (dir * (80 + Math.random() * 220)), y: window.innerHeight * (0.7 + Math.random() * 0.5), rotate: "+=" + (220 + Math.random() * 300), duration: 3.2 + Math.random() * 2, delay: i * 0.06, ease: "power1.in", onComplete: () => { gsap.set(leaf, { autoAlpha: 0 }) } },
+              { x: b.width * Math.random(), y: -60, rotate: Math.random() * 360, autoAlpha: 0.9 },
+              { y: window.innerHeight + 60, x: "+=" + (Math.random() * 240 - 120), rotate: "+=" + (Math.random() * 540 - 270), duration: 11 + Math.random() * 8, delay, ease: "none", onComplete: () => fall(leaf, Math.random() * 3) },
             )
-          })
+          }
+          falling.forEach((l, i) => fall(l, 1.6 + i * 2.4))
+          q("[data-fall] > *").forEach((inner: Element, i: number) => gsap.to(inner, { rotateX: 70, rotateY: 30, x: i % 2 ? 16 : -16, duration: 1.4 + (i % 3) * 0.5, yoyo: true, repeat: -1, ease: "sine.inOut" }))
+        } else if (navIn.length) {
+          gsap.fromTo(navIn, { y: -18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out" })
         }
-        undo.push(() => (gust.current = null))
-
-        /* falling leaves, always a few in the air */
-        const falling = q("[data-hero] [data-fall='idle']") as HTMLElement[]
-        const fall = (leaf: HTMLElement, delay: number) => {
-          const b = heroEl.getBoundingClientRect()
-          gsap.fromTo(
-            leaf,
-            { x: b.width * Math.random(), y: -60, rotate: Math.random() * 360, autoAlpha: 0.9 },
-            { y: window.innerHeight + 60, x: "+=" + (Math.random() * 240 - 120), rotate: "+=" + (Math.random() * 540 - 270), duration: 11 + Math.random() * 8, delay, ease: "none", onComplete: () => fall(leaf, Math.random() * 3) },
-          )
-        }
-        falling.forEach((l, i) => fall(l, 1.6 + i * 2.4))
-        q("[data-fall] > *").forEach((inner: Element, i: number) => gsap.to(inner, { rotateX: 70, rotateY: 30, x: i % 2 ? 16 : -16, duration: 1.4 + (i % 3) * 0.5, yoyo: true, repeat: -1, ease: "sine.inOut" }))
 
         /* 3. headings and blocks reveal as they arrive */
         q("[data-split]").forEach((h: Element) => {
@@ -354,7 +359,7 @@ export function useOverstoryScroll({
     // the storyboard is built once (and again only if the photo gives way to
     // the generated canopy); content props only change text inside it
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usePhoto])
+  }, [usePhoto, page])
 
   const onHeroReady = React.useCallback(() => {
     heroReady.current = true

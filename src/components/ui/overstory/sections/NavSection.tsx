@@ -42,7 +42,7 @@ export function NavSection({
       {/* ---------------------------------------------------------- nav */}
       <header className="ovs-nav">
         <div className="ovs-nav-in">
-          <a className="ovs-brand" href="#top" onClick={(e) => { e.preventDefault(); root.current?.scrollIntoView({ behavior: still ? "auto" : "smooth" }) }}>
+          <a className="ovs-brand" href="/" onClick={go("/")}>
             <BrandMark />
             <span>{brand}</span>
           </a>

@@ -52,6 +52,8 @@ import { QuotesSection } from "./overstory/sections/QuotesSection"
 import { FaqSection } from "./overstory/sections/FaqSection"
 import { BentoSection } from "./overstory/sections/BentoSection"
 import { FinaleSection } from "./overstory/sections/FinaleSection"
+import { AboutPage } from "./overstory/sections/AboutPage"
+import { LegalPage } from "./overstory/sections/LegalPage"
 import Skiper39 from "@/components/ui/skiper39"
 import Footer27 from "@/components/watermelon-ui/footer-27"
 
@@ -155,9 +157,32 @@ export default function OverstoryStudioLanding({
   const [mail, setMail] = React.useState("")
   const [mailState, setMailState] = React.useState("idle" as "idle" | "sending" | "done" | "error" | "invalid")
   const [caseIdx, setCaseIdx] = React.useState(0)
+  type PageKey = "home" | "about" | "terms" | "privacy"
+  const readRoute = (): PageKey => {
+    if (typeof window === "undefined") return "home"
+    const p = window.location.pathname
+    const h = window.location.hash
+    if (p === "/about" || h === "#about-page") return "about"
+    if (p === "/terms" || h === "#terms") return "terms"
+    if (p === "/privacy" || h === "#privacy") return "privacy"
+    return "home"
+  }
+  const [page, setPage] = React.useState<PageKey>(readRoute)
+  const pendingSec = React.useRef<string | null>(null)
   const heroIn = React.useRef(null as null | (() => void))
   const heroReady = React.useRef(false)
   const gust = React.useRef(null as null | ((x: number) => void))
+
+  React.useEffect(() => {
+    const onPop = () => {
+      const next = readRoute()
+      heroReady.current = false
+      setPage(next)
+      setActive(next === "home" ? "" : next)
+    }
+    window.addEventListener("popstate", onPop)
+    return () => window.removeEventListener("popstate", onPop)
+  }, [])
 
   // scheme: an explicit theme, else the nav switch, else the host's .dark class
   React.useEffect(() => {
@@ -178,14 +203,75 @@ export default function OverstoryStudioLanding({
   }, [])
 
   const go = React.useCallback((href?: string) => (e?: React.MouseEvent) => {
-    if (!href || !href.startsWith("#") || href.length < 2) return
-    const el = root.current?.querySelector('[data-sec="' + href.slice(1) + '"]')
-    if (!el) return
+    if (!href) return
+    const routeTarget: Record<string, { page: "about" | "terms" | "privacy"; path: string }> = {
+      "/about": { page: "about", path: "/about" },
+      "#about-page": { page: "about", path: "/about" },
+      "/terms": { page: "terms", path: "/terms" },
+      "#terms": { page: "terms", path: "/terms" },
+      "/privacy": { page: "privacy", path: "/privacy" },
+      "#privacy": { page: "privacy", path: "/privacy" },
+    }
+    const target = routeTarget[href]
+    if (target) {
+      e?.preventDefault()
+      setMenu(false)
+      if (page !== target.page) {
+        heroReady.current = false
+        window.history.pushState(null, "", target.path)
+        setPage(target.page)
+        setActive(target.page)
+        window.scrollTo({ top: 0, behavior: "auto" })
+      } else {
+        window.scrollTo({ top: 0, behavior: still ? "auto" : "smooth" })
+      }
+      return
+    }
+    if (href === "/") {
+      e?.preventDefault()
+      setMenu(false)
+      if (page !== "home") {
+        heroReady.current = false
+        window.history.pushState(null, "", "/")
+        setPage("home")
+        setActive("")
+        window.scrollTo({ top: 0, behavior: "auto" })
+      } else {
+        window.scrollTo({ top: 0, behavior: still ? "auto" : "smooth" })
+      }
+      return
+    }
+    if (!href.startsWith("#") || href.length < 2) return
+    const secName = href.slice(1)
+    const el = root.current?.querySelector('[data-sec="' + secName + '"]')
+    if (!el) {
+      if (page !== "home") {
+        e?.preventDefault()
+        setMenu(false)
+        pendingSec.current = secName
+        heroReady.current = false
+        window.history.pushState(null, "", "/" + href)
+        setPage("home")
+        setActive(secName)
+      }
+      return
+    }
     e?.preventDefault()
     setMenu(false)
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" })
-  }, [])
+  }, [page, still])
+
+  React.useEffect(() => {
+    if (page !== "home" || !pendingSec.current) return
+    const secName = pendingSec.current
+    pendingSec.current = null
+    const timer = window.setTimeout(() => {
+      const el = root.current?.querySelector('[data-sec="' + secName + '"]')
+      el?.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" })
+    }, 80)
+    return () => window.clearTimeout(timer)
+  }, [page, still])
 
   const book = React.useCallback((from: string) => (e: React.MouseEvent) => {
     if (onBook) {
@@ -198,6 +284,7 @@ export default function OverstoryStudioLanding({
   React.useEffect(() => {
     const r = root.current
     if (!r) return
+    if (page !== "home") setActive(page)
     let last = window.scrollY
     let raf = 0
     const onScroll = () => {
@@ -205,7 +292,7 @@ export default function OverstoryStudioLanding({
       raf = requestAnimationFrame(() => {
         const y = window.scrollY
         const top = r.getBoundingClientRect().top + y
-        r.toggleAttribute("data-solid", y > top + 40)
+        r.toggleAttribute("data-solid", page !== "home" || y > top + 40)
         r.toggleAttribute("data-navhide", y > last + 4 && y > top + 400)
         if (y < last - 4) r.removeAttribute("data-navhide")
         last = y
@@ -215,6 +302,10 @@ export default function OverstoryStudioLanding({
     onScroll()
     const io = new IntersectionObserver(
       (es) => {
+        if (page !== "home") {
+          setActive(page)
+          return
+        }
         for (const e of es) if (e.isIntersecting) setActive((e.target as HTMLElement).dataset.sec || "")
       },
       { rootMargin: "-45% 0px -50% 0px" },
@@ -225,7 +316,7 @@ export default function OverstoryStudioLanding({
       cancelAnimationFrame(raf)
       io.disconnect()
     }
-  }, [])
+  }, [page])
 
   // phone menu: Escape closes, focus moves in and comes back
   const menuBtn = React.useRef(null as HTMLButtonElement | null)
@@ -259,6 +350,7 @@ export default function OverstoryStudioLanding({
     root,
     still,
     usePhoto,
+    page,
     heroIn,
     heroReady,
     gust,
@@ -307,7 +399,7 @@ export default function OverstoryStudioLanding({
 
   return (
     <MotionConfig reducedMotion="user">
-      <div ref={root} className={"ovs-root " + className} data-scheme={scheme} data-season={season} data-photo={usePhoto ? "" : undefined} data-menu={menu ? "" : undefined} style={style}>
+      <div ref={root} className={"ovs-root " + className} data-scheme={scheme} data-season={season} data-photo={usePhoto && page === "home" ? "" : undefined} data-menu={menu ? "" : undefined} style={style}>
         <style>{OVS_CSS}</style>
         <ScrollProgressBar />
         <a className="ovs-skip" href={"#" + uid + "main"}>
@@ -333,98 +425,139 @@ export default function OverstoryStudioLanding({
       />
 
       <main id={uid + "main"}>
-        <HeroSection
-          uid={uid}
-          status={status}
-          H={H}
-          words={words}
-          logos={logos}
-          still={still}
-          usePhoto={usePhoto}
-          photo={photo}
-          season={season}
-          scheme={scheme}
-          seed={seed}
-          pal={pal}
-          heroReady={heroReady}
-          heroIn={heroIn}
-          gust={gust}
-          setPhotoFail={setPhotoFail}
-          go={go}
-        />
-        <ManifestoSection uid={uid} logos={logos} manifesto={manifesto} stats={stats} />
-        <ServicesSection
-          uid={uid}
-          svc={svc}
-          svcItems={svcItems}
-          svcOpen={svcOpen}
-          setSvcOpen={setSvcOpen}
-          svcHover={svcHover}
-          setSvcHover={setSvcHover}
-        />
-        <WorkSection uid={uid} wk={wk} caseIdx={caseIdx} go={go} book={book} />
-        <ProcessSection uid={uid} pr={pr} seed={seed} />
-        <QuotesSection
-          uid={uid}
-          qs={qs}
-          curQuote={curQuote}
-          quote={quote}
-          setQuote={setQuote}
-          quotePaused={quotePaused}
-          setQuotePaused={setQuotePaused}
-          still={still}
-          usePhoto={usePhoto}
-          photo={photo}
-          season={season}
-          seed={seed}
-          pal={pal}
-          setPhotoFail={setPhotoFail}
-        />
-        {pc ? (
-          <div data-sec="pricing">
-            <React.Suspense fallback={<div className="h-screen w-full" />}>
-              <PrismaHero />
+        {page === "about" ? (
+          <>
+            <AboutPage
+              uid={uid}
+              brand={brand}
+              still={still}
+              stats={stats}
+              go={go}
+              book={book}
+            />
+            <FinaleSection
+              uid={uid + "ab"}
+              cta={cta}
+              usePhoto={usePhoto}
+              photo={photo}
+              season={season}
+              scheme={scheme}
+              seed={seed}
+              pal={pal}
+              email={email}
+              copied={copied}
+              copyEmail={copyEmail}
+              book={book}
+              onBook={onBook}
+            />
+          </>
+        ) : page === "terms" || page === "privacy" ? (
+          <LegalPage
+            mode={page}
+            uid={uid}
+            brand={brand}
+            email={email}
+            copied={copied}
+            copyEmail={copyEmail}
+            go={go}
+            book={book}
+          />
+        ) : (
+          <>
+            <HeroSection
+              uid={uid}
+              status={status}
+              H={H}
+              words={words}
+              logos={logos}
+              still={still}
+              usePhoto={usePhoto}
+              photo={photo}
+              season={season}
+              scheme={scheme}
+              seed={seed}
+              pal={pal}
+              heroReady={heroReady}
+              heroIn={heroIn}
+              gust={gust}
+              setPhotoFail={setPhotoFail}
+              go={go}
+            />
+            <ManifestoSection uid={uid} logos={logos} manifesto={manifesto} stats={stats} />
+            <ServicesSection
+              uid={uid}
+              svc={svc}
+              svcItems={svcItems}
+              svcOpen={svcOpen}
+              setSvcOpen={setSvcOpen}
+              svcHover={svcHover}
+              setSvcHover={setSvcHover}
+            />
+            <WorkSection uid={uid} wk={wk} caseIdx={caseIdx} go={go} book={book} />
+            <ProcessSection uid={uid} pr={pr} seed={seed} />
+            <QuotesSection
+              uid={uid}
+              qs={qs}
+              curQuote={curQuote}
+              quote={quote}
+              setQuote={setQuote}
+              quotePaused={quotePaused}
+              setQuotePaused={setQuotePaused}
+              still={still}
+              usePhoto={usePhoto}
+              photo={photo}
+              season={season}
+              seed={seed}
+              pal={pal}
+              setPhotoFail={setPhotoFail}
+            />
+            {pc ? (
+              <div data-sec="pricing">
+                <React.Suspense fallback={<div className="h-screen w-full" />}>
+                  <PrismaHero />
+                </React.Suspense>
+              </div>
+            ) : null}
+            <FaqSection
+              uid={uid}
+              fq={fq}
+              faqOpen={faqOpen}
+              setFaqOpen={setFaqOpen}
+              copied={copied}
+              email={email}
+              copyEmail={copyEmail}
+            />
+            <BentoSection
+              uid={uid}
+              brand={brand}
+              scheme={scheme}
+              onSchemeChange={(next) => setOverride(next)}
+              cases={wk?.items}
+              stats={stats ?? undefined}
+              steps={pr?.steps}
+              book={book}
+            />
+            <React.Suspense fallback={<div className="min-h-[420px] w-full" />}>
+              <TeamSection uid={uid} brand={brand} still={still} book={book} />
             </React.Suspense>
-          </div>
-        ) : null}
-        <FaqSection
-          uid={uid}
-          fq={fq}
-          faqOpen={faqOpen}
-          setFaqOpen={setFaqOpen}
-          copied={copied}
-          email={email}
-          copyEmail={copyEmail}
-        />
-        <BentoSection
-          uid={uid}
-          brand={brand}
-          scheme={scheme}
-          onSchemeChange={(next) => setOverride(next)}
-          cases={wk?.items}
-          stats={stats ?? undefined}
-          steps={pr?.steps}
-          book={book}
-        />
-        <React.Suspense fallback={<div className="min-h-[420px] w-full" />}>
-          <TeamSection uid={uid} brand={brand} still={still} book={book} />
-        </React.Suspense>
-        <FinaleSection
-          uid={uid}
-          cta={cta}
-          usePhoto={usePhoto}
-          photo={photo}
-          season={season}
-          scheme={scheme}
-          seed={seed}
-          pal={pal}
-          email={email}
-          copied={copied}
-          copyEmail={copyEmail}
-          book={book}
-          onBook={onBook}
-        />
-        <Skiper39 uid={uid} />
+            <FinaleSection
+              uid={uid}
+              cta={cta}
+              usePhoto={usePhoto}
+              photo={photo}
+              season={season}
+              scheme={scheme}
+              seed={seed}
+              pal={pal}
+              email={email}
+              copied={copied}
+              copyEmail={copyEmail}
+              book={book}
+              onBook={onBook}
+            />
+            <Skiper39 uid={uid} />
+          </>
+        )}
       </main>
       </div>
       {ft ? (

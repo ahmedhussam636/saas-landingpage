@@ -8,6 +8,7 @@ interface TeamSectionProps {
   brand: string
   still: boolean
   book: (from: string) => (e: React.MouseEvent) => void
+  kickerNumber?: string
 }
 
 function makeTeam(brand: string): LanyardMember[] {
@@ -103,7 +104,7 @@ function makeTeam(brand: string): LanyardMember[] {
   ]
 }
 
-export function TeamSection({ uid, brand, still, book }: TeamSectionProps) {
+export function TeamSection({ uid, brand, still, book, kickerNumber = "08" }: TeamSectionProps) {
   const members = React.useMemo(() => makeTeam(brand), [brand])
 
   return (
@@ -111,7 +112,7 @@ export function TeamSection({ uid, brand, still, book }: TeamSectionProps) {
       <div className="ovs-wrap">
         <div className="ovs-head">
           <div>
-            <Kicker n="08" text="The crew" />
+            <Kicker n={kickerNumber} text="The crew" />
             <span id={uid + "tm"}>
               <Split text="Senior people, small crew. Flip a badge to meet us." className="ovs-h2" />
             </span>

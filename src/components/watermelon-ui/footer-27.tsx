@@ -23,6 +23,7 @@ const footerColumns = [
   {
     title: "STUDIO",
     links: [
+      { label: "About Us", href: "/about" },
       { label: "Selected Work", href: "#work" },
       { label: "Services", href: "#services" },
       { label: "How We Work", href: "#process" },
@@ -50,10 +51,10 @@ const footerColumns = [
   {
     title: "LEGAL",
     links: [
-      { label: "Fair Use", href: "#contact" },
-      { label: "Terms & Conditions", href: "#contact" },
-      { label: "Subprocessors", href: "#contact" },
-      { label: "Privacy Policy", href: "#contact" },
+      { label: "Fair Use", href: "/terms" },
+      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Subprocessors", href: "/privacy" },
+      { label: "Privacy Policy", href: "/privacy" },
     ],
   },
 ];
@@ -132,7 +133,7 @@ export default function Footer27({
   onBook,
 }: Footer27Props) {
   const handleLinkClick = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (onNavigate && href.startsWith("#") && href.length > 1) {
+    if (onNavigate && ((href.startsWith("#") && href.length > 1) || href.startsWith("/"))) {
       onNavigate(href, e);
     }
   };
@@ -311,18 +312,20 @@ export default function Footer27({
           </p>
 
           <div className="flex flex-wrap items-center gap-5 leading-none">
-            {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(
-              (item) => (
-                <a
-                  key={item}
-                  href="#contact"
-                  onClick={handleLinkClick("#contact")}
-                  className="transition-colors duration-150 hover:text-neutral-200 focus-visible:text-neutral-200 focus-visible:outline-none"
-                >
-                  {item}
-                </a>
-              ),
-            )}
+            {[
+              { label: "Privacy Policy", href: "/privacy" },
+              { label: "Terms of Service", href: "/terms" },
+              { label: "Cookie Policy", href: "/privacy" },
+            ].map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={handleLinkClick(item.href)}
+                className="transition-colors duration-150 hover:text-neutral-200 focus-visible:text-neutral-200 focus-visible:outline-none"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
         </motion.div>
       </div>

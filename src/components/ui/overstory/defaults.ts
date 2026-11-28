@@ -2,6 +2,7 @@ import type { OvsFaq, OvsLogo, OvsPlan, OvsQuote, OvsService, OvsStep } from "./
 
 export const DEFAULT_LINKS = [
   { label: "Work", href: "#work" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
   { label: "Pricing", href: "#pricing" },
