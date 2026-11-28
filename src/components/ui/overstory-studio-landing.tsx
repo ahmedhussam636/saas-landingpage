@@ -184,6 +184,47 @@ export default function OverstoryStudioLanding({
     return () => window.removeEventListener("popstate", onPop)
   }, [])
 
+  React.useEffect(() => {
+    const routeMeta: Record<PageKey, { title: string; description: string }> = {
+      home: {
+        title: `${brand} — Design & Engineering for SaaS Startups`,
+        description:
+          "Senior design and engineering crew for SaaS and AI startups. Ship brand, product UI, and production code in weeks—book an intro call.",
+      },
+      about: {
+        title: `About ${brand} — Senior SaaS Design & Engineering Studio`,
+        description:
+          "Meet the compact senior crew in Egypt & remote uniting brand identity, product design, and production TypeScript for ambitious SaaS founders.",
+      },
+      terms: {
+        title: `Terms & Conditions — ${brand}`,
+        description: `Plain-English terms governing ${brand} Studio sprints, Product Partner subscriptions, IP ownership, billing, and confidentiality.`,
+      },
+      privacy: {
+        title: `Privacy Policy — ${brand}`,
+        description: `How ${brand} Studio handles inquiries, minimal browser storage, subprocessors, and your data privacy rights.`,
+      },
+    }
+    const meta = routeMeta[page]
+    const fullUrl = window.location.origin + window.location.pathname
+    const ogImageUrl = window.location.origin + "/og-image.jpg"
+
+    document.title = meta.title
+    const setMeta = (selector: string, content: string, attr = "content") => {
+      document.querySelector(selector)?.setAttribute(attr, content)
+    }
+    setMeta('meta[name="title"]', meta.title)
+    setMeta('meta[name="description"]', meta.description)
+    setMeta('meta[property="og:title"]', meta.title)
+    setMeta('meta[property="og:description"]', meta.description)
+    setMeta('meta[property="og:url"]', fullUrl)
+    setMeta('meta[property="og:image"]', ogImageUrl)
+    setMeta('meta[name="twitter:title"]', meta.title)
+    setMeta('meta[name="twitter:description"]', meta.description)
+    setMeta('meta[name="twitter:image"]', ogImageUrl)
+    setMeta('link[rel="canonical"]', fullUrl, "href")
+  }, [page, brand])
+
   // scheme: an explicit theme, else the nav switch, else the host's .dark class
   React.useEffect(() => {
     const apply = () => setScheme(override || readScheme(theme))
