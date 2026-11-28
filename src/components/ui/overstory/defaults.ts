@@ -92,8 +92,8 @@ export const DEFAULT_FOOTER = {
     { title: "Company", links: [{ label: "About", href: "#about" }, { label: "Careers" }, { label: "Field notes" }, { label: "Press kit" }] },
     { title: "Elsewhere", links: [{ label: "LinkedIn" }, { label: "X" }, { label: "Dribbble" }, { label: "GitHub" }] },
   ],
-  city: "Lisbon",
-  timeZone: "Europe/Lisbon",
+  city: "Cairo",
+  timeZone: "Africa/Cairo",
   note: "Made under the trees.",
 }
 

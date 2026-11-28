@@ -142,7 +142,7 @@ daylight / dusk switch.
 | `pricing` | `{ kicker, title, text, plans, quarterlyNote } \| null` | Sprint, Partner (featured, with a quarterly price), Embedded. `price: null` prints "Custom". |
 | `faq` | `{ kicker, title, text, items } \| null` | Six. |
 | `cta` | `{ title, text, button } \| null` | The finale. `null` removes it. |
-| `footer` | `{ columns, city, timeZone, note } \| null` | Lisbon, `Europe/Lisbon`. |
+| `footer` | `{ columns, city, timeZone, note } \| null` | Cairo, `Africa/Cairo`. |
 | `email` | `string` | `"hello@overstory.studio"`. Copy buttons and `mailto:`. |
 | `currency` | `string` | `"$"` |
 | `photo` | `string \| null` | The embedded canopy photo. `null` grows the generated canopy. |

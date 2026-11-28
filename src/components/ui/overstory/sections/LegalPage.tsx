@@ -1,7 +1,6 @@
 import * as React from "react"
-import { ArrowLeft, Check, Copy, FileText, Mail, ShieldCheck } from "lucide-react"
-import { ScrollParallax, ScrollReveal } from "../motion"
-import { Arrow, Kicker, Split } from "../marks"
+import { ArrowLeft, Check, Copy } from "lucide-react"
+import { Kicker, Split } from "../marks"
 
 interface LegalClause {
   id: string
@@ -29,7 +28,7 @@ function getTermsClauses(brand: string, email: string): LegalClause[] {
       id: "scope",
       num: "01",
       title: "Scope of studio engagements",
-      summary: "How sprints, partner subscriptions, and embedded pods operate.",
+      summary: "Every engagement starts with a written scope, price and start date",
       paragraphs: [
         `These Terms & Conditions govern your access to the ${brand} website and any design, product strategy, or software engineering engagement agreed between you ("Client") and ${brand} Studio ("${brand}", "we", "us").`,
         "Every engagement begins with a written Statement of Work or subscription confirmation specifying deliverables, weekly cadence, pricing, and start dates.",
@@ -44,7 +43,7 @@ function getTermsClauses(brand: string, email: string): LegalClause[] {
       id: "ip-ownership",
       num: "02",
       title: "Intellectual property & client ownership",
-      summary: "You own 100% of custom work created for your product.",
+      summary: "Once paid, everything we make for your product belongs to you",
       paragraphs: [
         `From day one, all custom Figma libraries, brand assets, source code, repositories, and technical documentation produced specifically for Client under a paid engagement belong exclusively to Client upon receipt of applicable payment.`,
         `${brand} retains ownership only of pre-existing general utilities, internal scaffolding, open-source packages, and non-confidential studio know-how. Unless you ask us in writing not to, ${brand} may showcase non-confidential launched visuals in our selected work portfolio.`,
@@ -54,13 +53,13 @@ function getTermsClauses(brand: string, email: string): LegalClause[] {
       id: "billing-pause",
       num: "03",
       title: "Billing, pauses & cancellation",
-      summary: "Transparent billing with no surprise retainers or lock-in.",
+      summary: "Monthly plans can be paused or cancelled before renewal without a fee",
       paragraphs: [
         "Invoices are due according to the schedule in your engagement summary. For Partner plans, billing recurs monthly in advance unless paused or cancelled prior to the next billing cycle.",
         "If you pause a Product Partner subscription mid-cycle, unused billing days remain banked and roll over for up to sixty (60) days so you can resume without losing paid sprint time.",
       ],
       bullets: [
-        "Pause or cancel any monthly Partner subscription before renewal with zero penalty fees.",
+        "Pause or cancel any monthly Partner subscription before renewal without a penalty fee.",
         "Fixed Launch Sprints are billed 50% at kickoff and 50% upon final Figma/code handover.",
       ],
     },
@@ -68,7 +67,7 @@ function getTermsClauses(brand: string, email: string): LegalClause[] {
       id: "confidentiality",
       num: "04",
       title: "Confidentiality & mutual NDA",
-      summary: "Your roadmap, customer data, and pre-launch ideas stay private.",
+      summary: "Your roadmap, code and research stay private, on both sides",
       paragraphs: [
         `Both ${brand} and Client agree to protect non-public business plans, product roadmaps, source code, credentials, and user research shared during discovery or active sprints.`,
         "Access to your repositories, analytics, and design workspaces is limited strictly to the senior builders assigned to your pod.",
@@ -78,7 +77,7 @@ function getTermsClauses(brand: string, email: string): LegalClause[] {
       id: "liability",
       num: "05",
       title: "Warranties, fair use & liability",
-      summary: "Reasonable commercial care and standard liability boundaries.",
+      summary: "Our liability is capped at the fees you paid in the last three months",
       paragraphs: [
         `${brand} warrants that all custom deliverables are original work created by our crew and free from undisclosed third-party restrictions. Third-party open-source dependencies remain governed by their respective licenses.`,
         `To the maximum extent permitted by applicable law, neither party shall be liable for indirect or consequential damages, and ${brand}'s aggregate liability under any engagement shall not exceed the fees paid by Client during the preceding three (3) months. Questions regarding these terms can always be sent to ${email}.`,
@@ -93,7 +92,7 @@ function getPrivacyClauses(brand: string, email: string): LegalClause[] {
       id: "collect",
       num: "01",
       title: "Information we collect",
-      summary: "Only what is needed to reply to your inquiry and run our site.",
+      summary: "Only what you send us when you get in touch",
       paragraphs: [
         `At ${brand}, we keep data collection minimal and transparent. When you reach out to book an intro call or email us at ${email}, we collect the name, work email, company details, and project notes you choose to share.`,
         "We do not sell, rent, or trade founder contact details or client project information with third-party data brokers or ad networks.",
@@ -107,7 +106,7 @@ function getPrivacyClauses(brand: string, email: string): LegalClause[] {
       id: "cookies",
       num: "02",
       title: "Local storage & cookies",
-      summary: "Lightweight local preferences without invasive ad trackers.",
+      summary: "Your theme and crowd-walk choice stay in your browser. No ad trackers",
       paragraphs: [
         `${brand} uses browser localStorage solely to remember lightweight interface preferences—such as whether you joined the interactive community crowd walk and your preferred light/dark theme.`,
         "You can clear localStorage or reset the interactive crowd state at any time directly inside your browser settings or via the on-page Reset control.",
@@ -117,7 +116,7 @@ function getPrivacyClauses(brand: string, email: string): LegalClause[] {
       id: "usage",
       num: "03",
       title: "How we use your information",
-      summary: "Responding to founders, scoping sprints, and improving reliability.",
+      summary: "To reply, scope and deliver your project, and to send invoices",
       paragraphs: [
         "Information you share with us is used strictly to evaluate project fit, prepare written sprint proposals, communicate during active engagements, and fulfill legal or invoicing obligations.",
       ],
@@ -131,7 +130,7 @@ function getPrivacyClauses(brand: string, email: string): LegalClause[] {
       id: "subprocessors",
       num: "04",
       title: "Subprocessors & workspace security",
-      summary: "Trusted infrastructure with strict least-privilege access.",
+      summary: "Your work lives in your own accounts. Our tools encrypt the rest",
       paragraphs: [
         "During active client work, deliverables live primarily inside your own chosen workspace (such as your GitHub, Figma, Vercel, or cloud database accounts). For studio communication and billing, we rely on vetted enterprise providers with strong encryption in transit and at rest.",
       ],
@@ -140,7 +139,7 @@ function getPrivacyClauses(brand: string, email: string): LegalClause[] {
       id: "rights",
       num: "05",
       title: "Your privacy rights & contact",
-      summary: "Request access, correction, or deletion anytime.",
+      summary: "Email us to see, correct or delete your data at any time",
       paragraphs: [
         "Depending on your jurisdiction (including GDPR in the EU/EEA and UK, and CCPA/CPRA in California), you have the right to request access to, correction of, portability of, or deletion of personal data we hold about you.",
         `To exercise any privacy right or ask a question about how ${brand} handles data, email ${email} and a founder will respond directly.`,
@@ -164,347 +163,181 @@ export function LegalPage({
     () => (isTerms ? getTermsClauses(brand, email) : getPrivacyClauses(brand, email)),
     [isTerms, brand, email],
   )
+  const [active, setActive] = React.useState(clauses[0]?.id ?? "")
 
-  const scrollToClause = (id: string) => {
+  // Mark the clause currently in the reading zone as the active entry in the contents list.
+  React.useEffect(() => {
+    setActive(clauses[0]?.id ?? "")
+    if (typeof IntersectionObserver === "undefined") return
+    const els = clauses
+      .map((c) => document.getElementById(uid + "-" + c.id))
+      .filter((el): el is HTMLElement => !!el)
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]
+        if (hit) setActive(hit.target.id.slice(uid.length + 1))
+      },
+      { rootMargin: "-120px 0px -55% 0px" },
+    )
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [clauses, uid])
+
+  const jumpTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault()
     const el = document.getElementById(uid + "-" + id)
-    el?.scrollIntoView({ behavior: "smooth", block: "start" })
+    if (!el) return
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" })
+    setActive(id)
   }
 
   return (
     <>
-      {/* ---------------------------------------------------------- legal header */}
+      {/* ---------------------------------------------------------- header */}
       <section
         className="ovs-sec ovs-manifesto"
-        style={{ paddingTop: "clamp(120px, 14vw, 170px)", paddingBottom: "clamp(56px, 7vw, 90px)" }}
+        style={{
+          paddingTop: "clamp(120px, 14vw, 168px)",
+          paddingBottom: "clamp(48px, 6vw, 80px)",
+        }}
         data-sec={mode}
         aria-labelledby={uid + "-legal-h"}
       >
         <div className="ovs-wrap">
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-            <a
-              href="/"
-              onClick={go("/")}
-              className="ovs-btn ovs-btn-line"
-            >
-              <ArrowLeft className="size-4" />
-              <span>Back to home</span>
+          <div className="ovs-page-top">
+            <a href="/" onClick={go("/")} className="ovs-back">
+              <ArrowLeft aria-hidden="true" strokeWidth={1.5} />
+              <span>Home</span>
             </a>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
+            <nav className="ovs-legal-switch" aria-label="Legal documents">
+              <a
+                href="/terms"
                 onClick={go("/terms")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  height: "40px",
-                  padding: "0 16px",
-                  borderRadius: "999px",
-                  fontSize: "13.5px",
-                  fontWeight: 600,
-                  backgroundColor: isTerms ? "var(--ovs-ink)" : "var(--ovs-card)",
-                  color: isTerms ? "var(--ovs-paper)" : "var(--ovs-ink)",
-                  border: "1px solid var(--ovs-line)",
-                  cursor: "pointer",
-                }}
+                aria-current={isTerms ? "page" : undefined}
               >
-                <FileText className="size-3.5" />
-                <span>Terms &amp; Conditions</span>
-              </button>
-
-              <button
-                type="button"
+                Terms
+              </a>
+              <a
+                href="/privacy"
                 onClick={go("/privacy")}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  height: "40px",
-                  padding: "0 16px",
-                  borderRadius: "999px",
-                  fontSize: "13.5px",
-                  fontWeight: 600,
-                  backgroundColor: !isTerms ? "var(--ovs-ink)" : "var(--ovs-card)",
-                  color: !isTerms ? "var(--ovs-paper)" : "var(--ovs-ink)",
-                  border: "1px solid var(--ovs-line)",
-                  cursor: "pointer",
-                }}
+                aria-current={!isTerms ? "page" : undefined}
               >
-                <ShieldCheck className="size-3.5" />
-                <span>Privacy Policy</span>
-              </button>
-            </div>
+                Privacy
+              </a>
+            </nav>
           </div>
 
           <Kicker
-            n="LEGAL"
-            text={isTerms ? "Engagement & usage terms" : "Data protection & cookies"}
+            n="Legal"
+            text={isTerms ? "Engagements and site use" : "Data and browser storage"}
           />
           <span id={uid + "-legal-h"}>
             <Split
               text={
                 isTerms
-                  ? "Terms & Conditions written in plain English."
-                  : "Privacy Policy built on respect and zero tracking bloat."
+                  ? "Terms and conditions in plain English"
+                  : "What we collect, why, and how to remove it"
               }
               className="ovs-h2 ovs-h2-wide"
             />
           </span>
 
-          <div
-            className="mt-6 flex flex-wrap items-center gap-4 text-sm"
-            style={{ color: "var(--ovs-ink2)" }}
-            data-rv
-          >
-            <span>Effective date: November 27, 2026</span>
-            <span aria-hidden="true">·</span>
-            <span>{brand} Studio · Lisbon, Portugal</span>
-          </div>
+          <p className="ovs-legal-meta" data-rv>
+            In effect from November 27, 2026. {brand} Studio, Egypt.
+          </p>
         </div>
       </section>
 
-      {/* ---------------------------------------------------------- legal body */}
+      {/* ---------------------------------------------------------- body */}
       <section
         className="ovs-sec"
-        style={{ paddingTop: "clamp(48px, 6vw, 84px)" }}
-        aria-label={isTerms ? "Terms clauses" : "Privacy clauses"}
+        style={{ paddingTop: "clamp(40px, 5vw, 80px)" }}
+        aria-label={isTerms ? "Terms sections" : "Privacy sections"}
       >
         <div className="ovs-wrap">
-          <div className="ovs-proc-grid" style={{ marginTop: 0 }}>
-            {/* Sticky table of contents */}
-            <div className="ovs-tree-col">
-              <div
-                style={{
-                  position: "sticky",
-                  top: "110px",
-                }}
-              >
-                <ScrollParallax offset={12}>
-                  <div
-                    className="rounded-3xl border p-6 sm:p-8"
-                    style={{
-                      borderColor: "var(--ovs-line)",
-                      backgroundColor: "var(--ovs-card)",
-                    }}
-                  >
-                    <div
-                      className="text-xs font-semibold tracking-wider uppercase"
-                      style={{ color: "var(--ovs-accent)" }}
-                    >
-                      On this page
-                    </div>
-                    <nav aria-label="Document sections" className="mt-4 flex flex-col gap-2">
-                      {clauses.map((c) => (
-                        <button
-                          key={c.id}
-                          type="button"
-                          onClick={() => scrollToClause(c.id)}
-                          style={{
-                            display: "flex",
-                            alignItems: "baseline",
-                            gap: "10px",
-                            width: "100%",
-                            padding: "8px 10px",
-                            borderRadius: "10px",
-                            textAlign: "left",
-                            fontSize: "14px",
-                            fontWeight: 500,
-                            color: "var(--ovs-ink)",
-                            cursor: "pointer",
-                            transition: "background-color 180ms ease",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              "color-mix(in oklab, var(--ovs-ink) 6%, transparent)"
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "transparent"
-                          }}
-                        >
-                          <span
-                            className="tabular-nums text-xs font-semibold"
-                            style={{ color: "var(--ovs-accent)" }}
-                          >
-                            {c.num}
-                          </span>
-                          <span>{c.title}</span>
-                        </button>
-                      ))}
-                    </nav>
-
-                    <div
-                      className="mt-6 border-t pt-5"
-                      style={{ borderColor: "var(--ovs-line)" }}
-                    >
-                      <div
-                        className="text-xs leading-relaxed"
-                        style={{ color: "var(--ovs-ink2)" }}
-                      >
-                        Need a signed custom MSA or DPA for your procurement team?
-                      </div>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={copyEmail}
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "8px",
-                            height: "38px",
-                            padding: "0 14px",
-                            borderRadius: "999px",
-                            border: "1px solid var(--ovs-line)",
-                            backgroundColor: "var(--ovs-paper)",
-                            color: "var(--ovs-ink)",
-                            fontSize: "13px",
-                            fontWeight: 500,
-                            cursor: "pointer",
-                          }}
-                        >
-                          {copied ? (
-                            <Check
-                              className="size-3.5"
-                              style={{ color: "var(--ovs-accent)" }}
-                            />
-                          ) : (
-                            <Copy className="size-3.5" />
-                          )}
-                          <span>{copied ? "Copied email" : email}</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </ScrollParallax>
-              </div>
-            </div>
-
-            {/* Clauses */}
-            <div className="flex flex-col">
-              {clauses.map((c, idx) => (
-                <ScrollReveal
-                  key={c.id}
-                  delay={idx * 0.05}
-                  y={24}
-                  className="border-t py-8 first:border-t-0 first:pt-0"
-                >
-                  <article
-                    id={uid + "-" + c.id}
-                    style={{ scrollMarginTop: "110px" }}
-                  >
-                    <div
-                      className="ovs-step-k"
-                      style={{ marginBottom: "10px" }}
+          <div className="ovs-legal-grid">
+            <nav className="ovs-legal-toc" aria-label="On this page">
+              <p className="ovs-legal-toc-h">On this page</p>
+              <ol>
+                {clauses.map((c) => (
+                  <li key={c.id}>
+                    <a
+                      href={"#" + uid + "-" + c.id}
+                      onClick={jumpTo(c.id)}
+                      aria-current={active === c.id ? "true" : undefined}
                     >
                       <span>{c.num}</span>
-                      <b>{c.summary}</b>
-                    </div>
-                    <h2
-                      style={{
-                        fontSize: "clamp(24px, 2.6vw, 36px)",
-                        letterSpacing: "-0.035em",
-                        fontWeight: 500,
-                        lineHeight: 1.15,
-                        color: "var(--ovs-ink)",
-                      }}
-                    >
                       {c.title}
-                    </h2>
-                    <div className="mt-4 flex flex-col gap-3.5">
-                      {c.paragraphs.map((p, i) => (
-                        <p
-                          key={i}
-                          style={{
-                            fontSize: "16px",
-                            lineHeight: 1.65,
-                            color: "var(--ovs-ink2)",
-                            maxWidth: "56ch",
-                          }}
-                        >
-                          {p}
-                        </p>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+
+            <div>
+              {clauses.map((c) => (
+                <article
+                  key={c.id}
+                  id={uid + "-" + c.id}
+                  className="ovs-clause"
+                  aria-labelledby={uid + "-" + c.id + "-h"}
+                >
+                  <h2 id={uid + "-" + c.id + "-h"}>
+                    <span>{c.num}</span>
+                    {c.title}
+                  </h2>
+                  <div className="ovs-short">
+                    <small>In short</small>
+                    <p>{c.summary}</p>
+                  </div>
+                  <div className="ovs-clause-body">
+                    {c.paragraphs.map((p, i) => (
+                      <p key={i}>{p}</p>
+                    ))}
+                  </div>
+                  {c.bullets && c.bullets.length ? (
+                    <ul>
+                      {c.bullets.map((b) => (
+                        <li key={b}>{b}</li>
                       ))}
-                    </div>
-                    {c.bullets && c.bullets.length ? (
-                      <ul className="mt-4 flex flex-col gap-2.5">
-                        {c.bullets.map((b) => (
-                          <li
-                            key={b}
-                            className="flex items-start gap-2.5 text-[15px] leading-relaxed"
-                            style={{ color: "var(--ovs-ink)" }}
-                          >
-                            <span
-                              style={{
-                                marginTop: "8px",
-                                width: "6px",
-                                height: "6px",
-                                borderRadius: "999px",
-                                backgroundColor: "var(--ovs-accent)",
-                                flexShrink: 0,
-                              }}
-                            />
-                            <span>{b}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </article>
-                </ScrollReveal>
+                    </ul>
+                  ) : null}
+                </article>
               ))}
 
-              {/* Bottom CTA card */}
-              <ScrollReveal y={24} className="mt-4">
-                <div
-                  className="flex flex-col items-start justify-between gap-5 rounded-3xl border p-7 sm:flex-row sm:items-center"
-                  style={{
-                    borderColor: "var(--ovs-line)",
-                    backgroundColor: "var(--ovs-card)",
-                  }}
-                >
-                  <div>
-                    <div
-                      className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase"
-                      style={{ color: "var(--ovs-accent)" }}
-                    >
-                      <Mail className="size-3.5" />
-                      Direct founder contact
-                    </div>
-                    <div
-                      className="mt-1.5 text-lg font-semibold tracking-tight"
-                      style={{ color: "var(--ovs-ink)" }}
-                    >
-                      Have a specific legal or security question?
-                    </div>
-                    <p
-                      className="mt-1 text-sm"
-                      style={{ color: "var(--ovs-ink2)" }}
-                    >
-                      Write directly to {email} or schedule an intro call.
-                    </p>
-                  </div>
+              <div className="ovs-legal-contact">
+                <h2>{isTerms ? "Questions about these terms" : "Questions about your data"}</h2>
+                <p>
+                  Write to {email} and a founder will answer. We can also sign
+                  a custom MSA or DPA for your procurement team.
+                </p>
+                <div className="ovs-legal-contact-a">
                   <button
                     type="button"
+                    className="ovs-btn ovs-btn-dark"
                     onClick={book("legal-" + mode)}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      height: "44px",
-                      padding: "0 20px",
-                      borderRadius: "999px",
-                      backgroundColor: "var(--ovs-soft, #c4dc52)",
-                      color: "#10150d",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      flexShrink: 0,
-                    }}
                   >
-                    <span>Book an intro call</span>
-                    <Arrow />
+                    Book an intro call
+                  </button>
+                  <button
+                    type="button"
+                    className="ovs-btn ovs-btn-line"
+                    onClick={copyEmail}
+                    aria-live="polite"
+                  >
+                    {copied ? (
+                      <Check aria-hidden="true" strokeWidth={1.5} />
+                    ) : (
+                      <Copy aria-hidden="true" strokeWidth={1.5} />
+                    )}
+                    <span>{copied ? "Email copied" : "Copy email"}</span>
                   </button>
                 </div>
-              </ScrollReveal>
+              </div>
             </div>
           </div>
         </div>
