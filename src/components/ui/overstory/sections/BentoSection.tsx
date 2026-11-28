@@ -1,17 +1,12 @@
 import * as React from "react";
-import { ArrowUpRight, Layers, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import BentoCard, {
   type BentoThemeItem,
 } from "@/components/shadcn-studio/blocks/bento-cards-10/bento-cards-10";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollReveal } from "../motion";
 import { Kicker, Split } from "../marks";
-import {
-  DEFAULT_CASES,
-  DEFAULT_SERVICES,
-  DEFAULT_STATS,
-  DEFAULT_STEPS,
-} from "../defaults";
+import { DEFAULT_CASES, DEFAULT_STATS, DEFAULT_STEPS } from "../defaults";
+import { formatNumber } from "../canopy";
 import type { OvsCase, OvsStat, OvsStep } from "../types";
 
 interface BentoSectionProps {
@@ -33,8 +28,18 @@ const CODLY_STACK = [
   "Tailwind CSS",
   "Postgres",
   "Figma Tokens",
-  "GSAP & Motion",
+  "GSAP and Motion",
 ];
+
+/** Reads "Week 0 to 1" / "Weeks 3 to 7" / "Week 8 onward" into a span length in weeks. */
+function weekSpan(when: string) {
+  const n = (when.match(/\d+/g) || []).map(Number);
+  if (n.length >= 2) return Math.max(1, n[1] - n[0]);
+  return 1;
+}
+
+/** One hue, denser at each stage: the canopy filling in. */
+const STAGE_TONE = [28, 48, 72, 100];
 
 export function BentoSection({
   uid,
@@ -71,7 +76,19 @@ export function BentoSection({
   }, [brand, cases]);
 
   const highlightStats = stats.slice(0, 4);
-  const serviceTags = DEFAULT_SERVICES.slice(0, 4);
+  const clientNames = cases.map((c) => c.client);
+  const clientList =
+    clientNames.length > 1
+      ? clientNames.slice(0, -1).join(", ") + " and " + clientNames[clientNames.length - 1]
+      : clientNames.join("");
+
+  const tone = (i: number) =>
+    `color-mix(in oklab, var(--ovs-accent) ${STAGE_TONE[Math.min(i, STAGE_TONE.length - 1)]}%, var(--ovs-card))`;
+
+  const cardStyle: React.CSSProperties = {
+    borderColor: "var(--ovs-line)",
+    backgroundColor: "var(--ovs-card)",
+  };
 
   return (
     <section
@@ -85,7 +102,7 @@ export function BentoSection({
             <Kicker n="07" text="Studio system" />
             <span id={uid + "bento-h"}>
               <Split
-                text={`How ${brand} ships cohesive brands and code together.`}
+                text={`How ${brand} ships brand and code as one system`}
                 className="ovs-h2"
               />
             </span>
@@ -93,18 +110,19 @@ export function BentoSection({
           <div className="ovs-head-side" data-rv>
             <p className="ovs-lede">
               Every sprint pairs senior product design with production
-              engineering—tokens, components, and launch velocity in one system.
+              engineering, so tokens, components and the launch come out of the
+              same loop.
             </p>
           </div>
         </div>
 
-        <ScrollReveal y={28} duration={0.75}>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-            {/* Primary bento-cards-10 tile (2 columns on desktop) */}
-            <div className="min-h-[370px] lg:col-span-2">
+        <ScrollReveal y={24} duration={0.7}>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            {/* Themes and client design systems */}
+            <div className="min-h-[368px] lg:col-span-2">
               <BentoCard
-                title="Adaptive themes & client design systems"
-                description={`Switch ${brand} between light and dark modes while previewing the live token systems crafted for ScribeAI, Salesive, watchup, and Venn.`}
+                title="Light, dark and client design systems"
+                description={`Switch ${brand} between light and dark, and browse the token systems we built for ${clientList}.`}
                 illustrationPosition="top"
                 items={themeItems}
                 scheme={scheme}
@@ -112,203 +130,162 @@ export function BentoSection({
               />
             </div>
 
-            {/* Outcomes & velocity metrics from Codly stats */}
-            <Card
-              className="flex flex-col justify-between"
-              style={{
-                borderColor: "var(--ovs-line)",
-                backgroundColor: "var(--ovs-card)",
-              }}
-            >
-              <CardContent className="flex h-full flex-col justify-between gap-6">
-                <div className="flex items-center justify-between">
-                  <span
-                    className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase"
-                    style={{ color: "var(--ovs-accent)" }}
-                  >
-                    <Zap className="size-3.5" />
-                    Ship velocity
-                  </span>
-                  <span
-                    className="text-xs font-medium"
-                    style={{ color: "var(--ovs-ink2)" }}
-                  >
-                    Since 2019
-                  </span>
-                </div>
+            {/* Outcomes */}
+            <Card className="shadow-none" style={cardStyle}>
+              <CardContent className="flex h-full flex-col gap-6">
+                <h3 className="text-sm" style={{ color: "var(--ovs-ink2)" }}>
+                  Outcomes so far
+                </h3>
 
-                <div className="grid grid-cols-2 gap-4">
+                <dl className="grid flex-1 grid-cols-2 content-start gap-x-6 gap-y-6">
                   {highlightStats.map((s) => (
                     <div
                       key={s.label}
-                      className="rounded-xl border p-3.5"
-                      style={{
-                        borderColor: "var(--ovs-line)",
-                        backgroundColor: "var(--ovs-paper)",
-                      }}
+                      className="border-t pt-3"
+                      style={{ borderColor: "var(--ovs-line)" }}
                     >
-                      <div
-                        className="text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl"
-                        style={{ color: "var(--ovs-ink)" }}
+                      <dd
+                        className="text-[32px] leading-none font-medium tabular-nums"
+                        style={{ color: "var(--ovs-ink)", letterSpacing: "-0.04em" }}
                       >
-                        {s.prefix || ""}
-                        {s.value}
-                        {s.suffix || ""}
-                      </div>
-                      <div
-                        className="mt-1 text-xs leading-snug"
+                        {(s.prefix || "") +
+                          formatNumber(s.value, s.decimals || 0) +
+                          (s.suffix || "")}
+                      </dd>
+                      <dt
+                        className="mt-2 text-[13px] leading-snug"
                         style={{ color: "var(--ovs-ink2)" }}
                       >
                         {s.label}
-                      </div>
+                      </dt>
                     </div>
                   ))}
-                </div>
+                </dl>
 
-                <div
-                  className="text-xs leading-relaxed"
-                  style={{ color: "var(--ovs-ink2)" }}
-                >
-                  Four new startup teams per quarter—every engagement gets
-                  senior builders from day one.
-                </div>
+                <p className="text-[13px] leading-relaxed" style={{ color: "var(--ovs-ink2)" }}>
+                  Four new startup teams a quarter, each with senior builders
+                  from day one.
+                </p>
               </CardContent>
             </Card>
 
-            {/* Production stack & ownership */}
-            <Card
-              style={{
-                borderColor: "var(--ovs-line)",
-                backgroundColor: "var(--ovs-card)",
-              }}
-            >
-              <CardContent className="flex h-full flex-col justify-between gap-5">
-                <div className="flex items-center justify-between">
-                  <span
-                    className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase"
-                    style={{ color: "var(--ovs-accent)" }}
-                  >
-                    <Layers className="size-3.5" />
-                    Core stack
-                  </span>
-                  <ShieldCheck
-                    className="size-4"
-                    style={{ color: "var(--ovs-accent)" }}
-                  />
-                </div>
-
+            {/* Stack and ownership */}
+            <Card className="shadow-none" style={cardStyle}>
+              <CardContent className="flex h-full flex-col justify-between gap-6">
                 <div>
-                  <div
-                    className="text-lg font-semibold tracking-tight"
-                    style={{ color: "var(--ovs-ink)" }}
-                  >
-                    100% yours from day one
-                  </div>
+                  <h3 className="text-sm" style={{ color: "var(--ovs-ink2)" }}>
+                    Core stack
+                  </h3>
                   <p
-                    className="mt-1.5 text-sm leading-relaxed"
+                    className="mt-4 text-lg font-medium"
+                    style={{ color: "var(--ovs-ink)", letterSpacing: "-0.01em" }}
+                  >
+                    Yours from day one
+                  </p>
+                  <p
+                    className="mt-2 text-sm leading-relaxed"
                     style={{ color: "var(--ovs-ink2)" }}
                   >
-                    Figma libraries, GitHub repos, and design docs live directly
-                    in your workspace.
+                    Figma libraries, GitHub repos and design docs live in your
+                    own workspace.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <ul className="flex flex-wrap gap-2" aria-label="Core stack">
                   {CODLY_STACK.map((tech) => (
-                    <span
+                    <li
                       key={tech}
-                      className="rounded-full border px-3 py-1 text-xs font-medium"
+                      className="rounded-full border px-3 py-1 text-xs"
                       style={{
                         borderColor: "var(--ovs-line)",
-                        backgroundColor: "var(--ovs-paper)",
-                        color: "var(--ovs-ink)",
+                        color: "var(--ovs-ink2)",
                       }}
                     >
                       {tech}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </CardContent>
             </Card>
 
-            {/* 8-week sprint cadence + capabilities */}
-            <Card
-              className="lg:col-span-2"
-              style={{
-                borderColor: "var(--ovs-line)",
-                backgroundColor: "var(--ovs-card)",
-              }}
-            >
-              <CardContent className="flex h-full flex-col justify-between gap-6">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <span
-                    className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase"
-                    style={{ color: "var(--ovs-accent)" }}
-                  >
-                    <Sparkles className="size-3.5" />
-                    Eight-week cadence &amp; capabilities
-                  </span>
-
+            {/* Eight-week cadence */}
+            <Card className="shadow-none lg:col-span-2" style={cardStyle}>
+              <CardContent className="flex h-full flex-col gap-8">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-sm" style={{ color: "var(--ovs-ink2)" }}>
+                      Cadence
+                    </h3>
+                    <p
+                      className="mt-1 text-lg font-medium"
+                      style={{ color: "var(--ovs-ink)", letterSpacing: "-0.01em" }}
+                    >
+                      Eight weeks from discovery to launch
+                    </p>
+                  </div>
                   <button
                     type="button"
+                    className="ovs-btn ovs-btn-dark"
                     onClick={book("bento")}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      height: "36px",
-                      padding: "0 16px",
-                      borderRadius: "999px",
-                      backgroundColor: "var(--ovs-soft, #c4dc52)",
-                      color: "#10150d",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
                   >
-                    <span>Book a 30-min call</span>
-                    <ArrowUpRight className="size-3.5" />
+                    Book a 30-min call
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                  <div className="flex gap-1" aria-hidden="true">
+                    {steps.map((step, i) => (
+                      <span
+                        key={step.name}
+                        className="h-2 rounded-[4px]"
+                        style={{ flex: weekSpan(step.when), backgroundColor: tone(i) }}
+                      />
+                    ))}
+                  </div>
+                  <div
+                    className="mt-2 flex justify-between text-xs tabular-nums"
+                    style={{ color: "var(--ovs-ink2)" }}
+                    aria-hidden="true"
+                  >
+                    <span>Week 0</span>
+                    <span>Week 8</span>
+                  </div>
+                </div>
+
+                <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                   {steps.map((step, i) => (
-                    <div
-                      key={step.name}
-                      className="flex flex-col justify-between rounded-xl border p-3.5"
-                      style={{
-                        borderColor: "var(--ovs-line)",
-                        backgroundColor: "var(--ovs-paper)",
-                      }}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between text-xs">
-                          <span
-                            className="font-semibold"
-                            style={{ color: "var(--ovs-accent)" }}
-                          >
-                            0{i + 1} · {step.name}
-                          </span>
-                          <span style={{ color: "var(--ovs-ink2)" }}>
-                            {step.when}
-                          </span>
-                        </div>
-                        <div
-                          className="mt-2 text-base font-semibold"
-                          style={{ color: "var(--ovs-ink)" }}
+                    <li key={step.name}>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="size-2 shrink-0 rounded-[2px]"
+                          style={{ backgroundColor: tone(i) }}
+                          aria-hidden="true"
+                        />
+                        <span
+                          className="text-xl leading-none"
+                          style={{
+                            fontFamily: "var(--ovs-serif)",
+                            color: "var(--ovs-ink)",
+                          }}
                         >
-                          {step.title}
-                        </div>
+                          {step.name}
+                        </span>
                       </div>
-                      <div
-                        className="mt-2 text-xs"
+                      <p
+                        className="mt-3 text-base font-medium"
+                        style={{ color: "var(--ovs-ink)" }}
+                      >
+                        {step.title}
+                      </p>
+                      <p
+                        className="mt-1 text-[13px] tabular-nums"
                         style={{ color: "var(--ovs-ink2)" }}
                       >
-                        {serviceTags[i]?.title || "Weekly Friday demos"}
-                      </div>
-                    </div>
+                        {step.when}
+                      </p>
+                    </li>
                   ))}
-                </div>
+                </ol>
               </CardContent>
             </Card>
           </div>

@@ -68,6 +68,19 @@ const DEFAULT_CODLY_THEMES: BentoThemeItem[] = [
 
 const WIDE_WIDTH = 320;
 
+const usePrefersReducedMotion = () => {
+  const [reduce, setReduce] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    setReduce(mq.matches);
+    const on = (e: MediaQueryListEvent) => setReduce(e.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return reduce;
+};
+
 const useSlotWidth = (ref: RefObject<HTMLElement | null>) => {
   const [width, setWidth] = useState(0);
   useEffect(() => {
@@ -99,6 +112,7 @@ const ThemeToggleIllustration = ({
   const span1Ref = useRef<HTMLSpanElement>(null);
   const span2Ref = useRef<HTMLSpanElement>(null);
   const span3Ref = useRef<HTMLSpanElement>(null);
+  const reduceMotion = usePrefersReducedMotion();
 
   return (
     <BeamConnection
@@ -130,7 +144,6 @@ const ThemeToggleIllustration = ({
                     : "1px solid var(--ovs-line)",
                 backgroundColor: "#ffffff",
                 color: "#10150d",
-                boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
                 cursor: onSchemeChange ? "pointer" : "default",
                 position: "relative",
                 zIndex: 2,
@@ -157,7 +170,6 @@ const ThemeToggleIllustration = ({
                     : "1px solid rgba(255,255,255,0.16)",
                 backgroundColor: "#0e1a10",
                 color: "#f4f6f0",
-                boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
                 cursor: onSchemeChange ? "pointer" : "default",
                 position: "relative",
                 zIndex: 2,
@@ -184,7 +196,7 @@ const ThemeToggleIllustration = ({
                 slidesToScroll: 1,
               }}
               orientation="vertical"
-              plugins={[Autoplay({ delay: 2600, stopOnInteraction: false })]}
+              plugins={reduceMotion ? [] : [Autoplay({ delay: 2600, stopOnInteraction: false })]}
               className={cn("z-2", wide && "bg-card rounded-2xl")}
             >
               <CarouselContent
@@ -196,25 +208,25 @@ const ThemeToggleIllustration = ({
                     className={cn(wide && "basis-1/2 pt-7")}
                   >
                     <div
-                      className="bg-card flex items-center gap-3 rounded-xl border px-3.5 py-2.5 shadow-xs"
+                      className="bg-card flex items-center gap-3 rounded-xl border px-3 py-2.5"
                       style={{ borderColor: "var(--ovs-line)" }}
                     >
                       <div
                         className="size-7 shrink-0 rounded-lg border"
                         style={{
                           borderColor: "var(--ovs-line)",
-                          background: `linear-gradient(135deg, ${theme.soft} 0%, ${theme.accent} 100%)`,
+                          background: `linear-gradient(90deg, ${theme.soft} 50%, ${theme.accent} 50%)`,
                         }}
                       />
                       <div className="flex min-w-0 flex-col text-left">
                         <span
-                          className="text-sm font-semibold whitespace-nowrap"
+                          className="text-sm font-medium whitespace-nowrap"
                           style={{ color: "var(--ovs-ink)" }}
                         >
                           {theme.name}
                         </span>
                         <span
-                          className="text-[11px] whitespace-nowrap"
+                          className="text-xs whitespace-nowrap"
                           style={{ color: "var(--ovs-ink2)" }}
                         >
                           {theme.tag}
@@ -370,7 +382,7 @@ const BentoCard = ({
 
   return (
     <Card
-      className={cn("size-full min-h-0 overflow-hidden", className)}
+      className={cn("size-full min-h-0 overflow-hidden shadow-none", className)}
       style={{
         borderColor: "var(--ovs-line)",
         backgroundColor: "var(--ovs-card)",
@@ -380,7 +392,7 @@ const BentoCard = ({
         {illustrationPosition === "top" && illustrationSlot}
         <div className="flex shrink-0 flex-col gap-2">
           <CardTitle
-            className="text-xl font-semibold tracking-tight"
+            className="text-xl font-medium"
             style={{ color: "var(--ovs-ink)" }}
           >
             {title}
